@@ -1,0 +1,12 @@
+export TMPDIR=/ptmp/$USER
+module load git
+#module load anaconda
+PROMPT_DIRTRIM=2
+if [ -z "$TMUX" ]; then
+    export MODULEPATH=$MODULEPATH:/u/$USER/modules/modulefiles/general:/u/$USER/modules/modulefiles/bioinformatics::/u/$USER/modules/modulefiles/libs
+    module load tmux
+    (tmux ls | grep -vq attached && tmux at) || tmux
+fi
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+
