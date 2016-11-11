@@ -1,8 +1,10 @@
 #!/bin/bash
 
-export USER_NAME=jboucas
-export HOME=/u/jboucas
-export MODS=/u/jboucas/modules
+umask 022
+
+export USER_NAME=$USER
+export HOME=/u/$USER
+export MODS=/u/$USER/modules
 export SOFT=$MODS/software
 export SOUR=$MODS/sources
 export MODF=$MODS/modulefiles
@@ -532,6 +534,10 @@ cd $SOUR && \
 ' > $LOGS/skewer-0.2.2.sh
 chmod 755 $LOGS/skewer-0.2.2.sh
 srun -o $LOGS/skewer-0.2.2.out $LOGS/skewer-0.2.2.sh
+
+
+chmod -R 755 $HOME/bin
+chmod -R 755 $MODS
 
 echo 'source("http://bioconductor.org/biocLite.R")' > ~/pack.install.R && \
 echo 'biocLite(c("biomaRt"), ask=FALSE)'  >> ~/pack.install.R && \
