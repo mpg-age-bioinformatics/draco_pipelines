@@ -1,8 +1,8 @@
 # draco_pipelines
 
-This repo containg pipelines running on the draco cluster.
+This repo contains pipelines running on the draco cluster.
 
-More info on the draco cluster can be on the web page of the [Max Planck Computing & Data Facility (MPCDF)](http://www.mpcdf.mpg.de/services/computing).
+More info on the draco cluster can be found on the web page of the [Max Planck Computing & Data Facility (MPCDF)](http://www.mpcdf.mpg.de/services/computing).
 
 All users registered on [https://mpg-age-bioinformatics.github.io](https://mpg-age-bioinformatics.github.io) are by defenition also registered at the MPCDF.
 
@@ -10,9 +10,9 @@ All users registered on [https://mpg-age-bioinformatics.github.io](https://mpg-a
 
 This folder contains the files required to install the software for the pipelines here presented.
 
-`software.sh` a bash script to install all required software
+`software.sh` a bash script for installation of all required software
 
-`newmod.sh` required by *software.sh* this scripts generates the module files for each installed software.
+`newmod.sh` required by *software.sh* this script generates the module files for each installed software.
 
 `bash_profile` an example of a `.bash_profile` 
 
