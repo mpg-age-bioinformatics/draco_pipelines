@@ -288,6 +288,8 @@ if [ ! -f $MODF/general/python/2.7.12 ]; then
     echo "setenv JUPYTER_DATA_DIR \$home/.Python/2.7.12/jupyter/data" >> $MODF/general/python/2.7.12
     echo "setenv PYTHONHOME $SOFT/python/2.7.12/" >> $MODF/general/python/2.7.12
     echo "setenv PYTHONUSERBASE \$home/.Python/2.7.12/" >> $MODF/general/python/2.7.12
+    echo "exec /bin/mkdir -p \$home/.Python/2.7.12/pythonpath/site-packages" >> $MODF/general/python/2.7.12
+	echo "prepend-path PYTHONPATH \$home/.Python/2.7.12/pythonpath/site-packages" >> $MODF/general/python/2.7.12  
     ' > $LOGS/python-2.7.12.sh
 	chmod 755 $LOGS/python-2.7.12.sh
 	srun -o $LOGS/python-2.7.12.out $LOGS/python-2.7.12.sh #-o $LOGS/python-2.7.12.out
