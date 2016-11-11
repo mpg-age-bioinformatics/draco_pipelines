@@ -27,7 +27,7 @@ mkdir -p $MODS $SOFT $SOUR $MODF $LIN $LFS $LOGS && \
     ln -sv $LFS/lib $LFS/lib64
 
 export PATH=$HOME/bin:$LFS/bin:$PATH
-export LD_LIBRARY_PATH=$LFS/lib:$LD_LIBRARY_PATH
+#export LD_LIBRARY_PATH=$LFS/lib:$LD_LIBRARY_PATH
 #export CPATH=$LFS/include:$CPATH
 #export C_INCLUDE_PATH=$LFS/include:$C_INCLUDE_PATH
 
@@ -51,7 +51,7 @@ cd $SOUR && wget -O l.tar.gz http://javadl.oracle.com/webapps/download/AutoDL?Bu
     -d 8.0.111
 ' > $LOGS/java-8.0.111.sh
 chmod 755 $LOGS/java-8.0.111.sh
-#srun -o $LOGS/java-8.0.111.out $LOGS/java-8.0.111.sh
+srun -o $LOGS/java-8.0.111.out $LOGS/java-8.0.111.sh
 
 echo 'libevent-2.0.22'
 echo '#!/bin/bash
@@ -69,7 +69,7 @@ cd $SOUR && wget -O l.tar.gz https://github.com/libevent/libevent/archive/releas
     -d 2.0.22
 ' > $LOGS/libevent-2.0.22.sh
 chmod 755 $LOGS/libevent-2.0.22.sh
-#srun -o $LOGS/libevent-2.0.22.out $LOGS/libevent-2.0.22.sh
+srun -o $LOGS/libevent-2.0.22.out $LOGS/libevent-2.0.22.sh
 
 module load libevent/2.0.22
 
@@ -91,7 +91,7 @@ cd $SOUR && \
     -d 6.0
 ' > $LOGS/ncurses-6.0.sh
 chmod 755 $LOGS/ncurses-6.0.sh
-#srun -o $LOGS/ncurses-6.0.out $LOGS/ncurses-6.0.sh
+srun -o $LOGS/ncurses-6.0.out $LOGS/ncurses-6.0.sh
 
 module load ncurses/6.0
 
@@ -124,7 +124,7 @@ echo 'sed -i "s@(PREFIX)/man@(PREFIX)/share/man@g" Makefile
     -d 1.0.6
     ' >> $LOGS/bzip2-1.0.6.sh
 chmod 755 $LOGS/bzip2-1.0.6.sh
-#srun -o $LOGS/bzip2-1.0.6.out $LOGS/bzip2-1.0.6.sh #-o $LOGS/bzip2-1.0.6.out
+srun -o $LOGS/bzip2-1.0.6.out $LOGS/bzip2-1.0.6.sh #-o $LOGS/bzip2-1.0.6.out
 
 module load bzip2/1.0.6
 
@@ -145,7 +145,7 @@ cd $SOUR && \
     -d 5.2.2
     ' > $LOGS/xz-5.2.2.sh
 chmod 755 $LOGS/xz-5.2.2.sh
-#srun -o $LOGS/xz-5.2.2.out $LOGS/xz-5.2.2.sh
+srun -o $LOGS/xz-5.2.2.out $LOGS/xz-5.2.2.sh
 
 module load xz/5.2.2
 
@@ -166,7 +166,7 @@ cd $SOUR && \
     -d 8.39
     ' > $LOGS/pcre-8.39.sh
 chmod 755 $LOGS/pcre-8.39.sh
-#srun -o $LOGS/pcre-8.39.out $LOGS/pcre-8.39.sh # -o $LOGS/pcre-8.39.out
+srun -o $LOGS/pcre-8.39.out $LOGS/pcre-8.39.sh # -o $LOGS/pcre-8.39.out
 
 module load pcre/8.39
 
@@ -187,7 +187,7 @@ cd $SOUR && \
     -d 7.51.0
     ' > $LOGS/curl-7.51.0.sh
 chmod 755 $LOGS/curl-7.51.0.sh
-#srun -o $LOGS/curl-7.51.0.out $LOGS/curl-7.51.0.sh # -o $LOGS/pcre-8.39.out
+srun -o $LOGS/curl-7.51.0.out $LOGS/curl-7.51.0.sh # -o $LOGS/pcre-8.39.out
 
 module load curl/7.51.0
 
@@ -209,7 +209,7 @@ cd $SOUR && \
     -d 0.2.19
     ' > $LOGS/openblas-0.2.19.sh
 chmod 755 $LOGS/openblas-0.2.19.sh
-#srun -o $LOGS/openblas-0.2.19.out $LOGS/openblas-0.2.19.sh # -o $LOGS/openblas-0.2.19.out
+srun -o $LOGS/openblas-0.2.19.out $LOGS/openblas-0.2.19.sh # -o $LOGS/openblas-0.2.19.out
 
 module load openblas/0.2.19
 
@@ -241,7 +241,7 @@ cd $SOUR && \
     echo "prepend-path OBJC_INCLUDE_PATH $SOFT/r/3.3.2/lib64/R/include" >> $MODF/general/rlang/3.3.2
     ' > $LOGS/rlang-3.3.2.sh
 chmod 755 $LOGS/rlang-3.3.2.sh
-#srun -o $LOGS/rlang-3.3.2.out $LOGS/rlang-3.3.2.sh #-o $LOGS/r-3.3.2.out
+srun -o $LOGS/rlang-3.3.2.out $LOGS/rlang-3.3.2.sh #-o $LOGS/r-3.3.2.out
 
 echo 'python-2.7.12'
 echo '#!/bin/bash
@@ -275,7 +275,7 @@ cd $SOUR && \
     echo "setenv PYTHONUSERBASE \$home/.Python/2.7.12/" >> $MODF/general/python/2.7.12
     ' > $LOGS/python-2.7.12.sh
 chmod 755 $LOGS/python-2.7.12.sh
-#srun -o $LOGS/python-2.7.12.out $LOGS/python-2.7.12.sh #-o $LOGS/python-2.7.12.out
+srun -o $LOGS/python-2.7.12.out $LOGS/python-2.7.12.sh #-o $LOGS/python-2.7.12.out
 
 echo 'pigz-2.3.4'
 echo '#!/bin/bash
@@ -294,7 +294,7 @@ cd $SOUR && \
     -d 2.3.4
 ' > $LOGS/pigz-2.3.4.sh
 chmod 755 $LOGS/pigz-2.3.4.sh
-#srun -o $LOGS/pigz-2.3.4.out $LOGS/pigz-2.3.4.sh
+srun -o $LOGS/pigz-2.3.4.out $LOGS/pigz-2.3.4.sh
 
 echo 'tmux-2.3'
 echo '#!/bin/bash
@@ -316,7 +316,7 @@ cd $SOUR && \
     echo "module load libevent/2.0.22" >> $MODF/general/tmux/2.3
 ' > $LOGS/tmux-2.3.sh
 chmod 755 $LOGS/tmux-2.3.sh
-#srun -o $LOGS/tmux-2.3.out $LOGS/tmux-2.3.sh
+srun -o $LOGS/tmux-2.3.out $LOGS/tmux-2.3.sh
 
 
 echo 'bowtie2-2.2.9'
@@ -338,7 +338,7 @@ cd $SOUR
     #echo "module load libevent/2.0.22" >> $MODF/bioinformatics/bowtie/2.2.9
 ' > $LOGS/bowtie-2.2.9.sh
 chmod 755 $LOGS/bowtie-2.2.9.sh
-#srun -o $LOGS/bowtie-2.2.9.out $LOGS/bowtie-2.2.9.sh
+srun -o $LOGS/bowtie-2.2.9.out $LOGS/bowtie-2.2.9.sh
 
 echo 'cufflinks-2.2.1'
 echo '#!/bin/bash
@@ -357,7 +357,7 @@ cd $SOUR && \
     -d 2.2.1
 ' > $LOGS/cufflinks-2.2.1.sh
 chmod 755 $LOGS/cufflinks-2.2.1.sh
-#srun -o $LOGS/cufflinks-2.2.1.out $LOGS/cufflinks-2.2.1.sh
+srun -o $LOGS/cufflinks-2.2.1.out $LOGS/cufflinks-2.2.1.sh
 
 echo 'fastqc-0.11.5'
 echo '#!/bin/bash
@@ -378,7 +378,7 @@ cd $SOUR && \
     echo "module load java" >> $MODF/bioinformatics/fastqc/0.11.5
 ' > $LOGS/fastqc-0.11.5.sh
 chmod 755 $LOGS/fastqc-0.11.5.sh
-#srun -o $LOGS/fastqc-0.11.5.out $LOGS/fastqc-0.11.5.sh
+srun -o $LOGS/fastqc-0.11.5.out $LOGS/fastqc-0.11.5.sh
 
 echo 'flexbar-2.5.0'
 echo '#!/bin/bash
@@ -400,7 +400,7 @@ cd $SOUR && \
     echo "module load bzip2" >> $MODF/bioinformatics/flexbar/2.5.0
 ' > $LOGS/flexbar-2.5.0.sh
 chmod 755 $LOGS/flexbar-2.5.0.sh
-#srun -o $LOGS/flexbar-2.5.0.out $LOGS/flexbar-2.5.0.sh
+srun -o $LOGS/flexbar-2.5.0.out $LOGS/flexbar-2.5.0.sh
 
 echo 'samtools-1.3.1'
 echo '#!/bin/bash
@@ -542,18 +542,18 @@ chmod -R 755 $MODS
 echo 'source("http://bioconductor.org/biocLite.R")' > ~/pack.install.R && \
 echo 'biocLite(c("biomaRt"), ask=FALSE)'  >> ~/pack.install.R && \
 module load rlang && srun Rscript ~/pack.install.R
-#"gplots","Gviz",
 
+
+exit
+
+# installing AGEpy
 module load python/2.7.12
-#module load rlang
+module load rlang
 module load mkl/11.3
 export LD_LIBRARY_PATH=/mpcdf/soft/SLES114/common/intel/ps2016.3/16.0/linux/mkl/lib/intel64:$LD_LIBRARY_PATH
 python -m ensurepip --user
-#cd $HOME && git clone https://github.com/mpg-age-bioinformatics/AGEpy
+cd $HOME && git clone https://github.com/mpg-age-bioinformatics/AGEpy
 cd $HOME/AGEpy
     CFLAGS="-I$SOFT/ncurses/6.0/include/ncurses -I$SOFT/libevent/2.0.22/include -I$SOFT/bzip2/1.0.6/include -I$SOFT/xz/5.2.2/include -I$SOFT/pcre/8.39/include -I$SOFT/curl/7.51.0/include -I$SOFT/openblas/0.2.19/include -I/u/jboucas/modules/software/rlang/3.3.2/lib64/R/include" LDFLAGS="-L$SOFT/ncurses/6.0/lib -L$SOFT/libevent/2.0.22/lib -L$SOFT/bzip2/1.0.6/lib -L$SOFT/xz/5.2.2/lib -L$SOFT/pcre/8.39/lib -L$SOFT/curl/7.51.0/lib -L$SOFT/openblas/0.2.19/lib -L/mpcdf/soft/SLES114/common/intel/ps2016.3/16.0/linux/mkl/lib/intel64 -L/u/jboucas/modules/software/r/3.3.2/lib64/R/lib" python setup.py develop --user
-
-    #CFLAGS=-I/u/jboucas/modules/software/rlang/3.3.2/lib64/R/include \
-    #LDFLAGS="-L/mpcdf/soft/SLES114/common/intel/ps2016.3/16.0/linux/mkl/lib/intel64 -L/u/jboucas/modules/software/r/3.3.2/lib64/R/lib" python setup.py develop --user
 
 exit
