@@ -252,7 +252,9 @@ if [ ! -f $MODF/general/rlang/3.3.2 ]; then
     echo "prepend-path C_INCLUDE_PATH $SOFT/r/3.3.2/lib64/R/include" >> $MODF/general/rlang/3.3.2
     echo "prepend-path CPLUS_INCLUDE_PATH $SOFT/r/3.3.2/lib64/R/include" >> $MODF/general/rlang/3.3.2
     echo "prepend-path OBJC_INCLUDE_PATH $SOFT/r/3.3.2/lib64/R/include" >> $MODF/general/rlang/3.3.2
-    ' > $LOGS/rlang-3.3.2.sh
+    mv $SOFT/rlang/3.3.2/lib64/R/lib/libRblas.so $SOFT/rlang/3.3.2/lib64/R/lib/old_libRblas.so
+    ln -s $SOFT/openblas/0.2.19/lib/libopenblas.so $SOFT/rlang/3.3.2/lib64/R/lib/libRblas.so
+	' > $LOGS/rlang-3.3.2.sh
 	chmod 755 $LOGS/rlang-3.3.2.sh
 	srun -o $LOGS/rlang-3.3.2.out $LOGS/rlang-3.3.2.sh #-o $LOGS/r-3.3.2.out
 fi
