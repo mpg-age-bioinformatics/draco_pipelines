@@ -3,8 +3,8 @@
 umask 022
 
 export USER_NAME=$USER
-export HOME=/u/$USER
-export MODS=/u/$USER/modules
+#export HOME=/u/$USER
+export MODS=/u/$USER_NAME/modules
 export SOFT=$MODS/software
 export SOUR=$MODS/sources
 export MODF=$MODS/modulefiles
@@ -26,7 +26,7 @@ mkdir -p $MODS $SOFT $SOUR $MODF $LIN $LFS $LOGS && \
     mkdir -p $LFS/lib $LFS/bin $LFS/include && \
     ln -sv $LFS/lib $LFS/lib64
 
-export PATH=$HOME/bin:$LFS/bin:$PATH
+export PATH=$HOME/bin:$PATH
 #export LD_LIBRARY_PATH=$LFS/lib:$LD_LIBRARY_PATH
 #export CPATH=$LFS/include:$CPATH
 #export C_INCLUDE_PATH=$LFS/include:$C_INCLUDE_PATH
@@ -536,15 +536,13 @@ chmod 755 $LOGS/skewer-0.2.2.sh
 srun -o $LOGS/skewer-0.2.2.out $LOGS/skewer-0.2.2.sh
 
 
-chmod -R 755 $HOME/bin
 chmod -R 755 $MODS
+
+exit
 
 echo 'source("http://bioconductor.org/biocLite.R")' > ~/pack.install.R && \
 echo 'biocLite(c("biomaRt"), ask=FALSE)'  >> ~/pack.install.R && \
 module load rlang && srun Rscript ~/pack.install.R
-
-
-exit
 
 # installing AGEpy
 module load python/2.7.12
