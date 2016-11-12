@@ -1,0 +1,9 @@
+#!/bin/bash
+
+ip=$(ip addr show | grep "scope global eth4" | cut -d "/" -f1 | cut -d "t" -f2 | cut -d " " -f2) 
+port=$(cat ${HOME}/.jupyter/jupyter_notebook_config.py | grep "c.NotebookApp.port =" | grep -v "#" | cut -d " " -f3) 
+
+printf "\n\n\nConnect your browser to:\nhttps://${ip}/${port}\n\n\n\n"
+
+jupyter notebook
+
