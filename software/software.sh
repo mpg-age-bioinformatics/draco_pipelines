@@ -21,8 +21,7 @@ cp newmod.sh $HOME/bin
 #rm -rf $HOME/.Python
 
 mkdir -p $MODS $SOFT $SOUR $MODF $LIN $LFS $LOGS && \
-    cd $MODF && \
-    mkdir -p bioinformatics general libs linux && \
+    mkdir -p $MODF/bioinformatics $MODF/general $MODF/libs $MODF/linux && \
     mkdir -p $LFS/lib $LFS/bin $LFS/include && \
     ln -sv $LFS/lib $LFS/lib64
 
@@ -35,6 +34,18 @@ module load autotools
 module load cmake/3.6
 module load gcc/6.2
 
+if [ ! -f $MODF/general/jup/0.1 ]; then
+    echo 'jup-0.1'
+    mkdir -p $SOFT/jup/0.1/bin
+    cp jup $SOFT/jup/0.1/bin
+    newmod.sh \
+    -s jup \
+    -p $MODF/general/ \
+    -v 0.1 \
+    -d 0.1
+	echo "module load rlang" >> $MODF/general/jup/0.1
+	echo "module load python" >> $MODF/general/jup/0.1
+fi
 
 if [ ! -f $MODF/general/java/8.0.111 ]; then 
 	echo 'java-8.0.111'
@@ -645,6 +656,7 @@ if [ ! -f $MODF/bioinformatics/skewer/0.2.2 ]; then
 	chmod 755 $LOGS/skewer-0.2.2.sh
 	srun -o $LOGS/skewer-0.2.2.out $LOGS/skewer-0.2.2.sh
 fi
+
 
 module load python/2.7.12
 module load rlang/3.3.2
