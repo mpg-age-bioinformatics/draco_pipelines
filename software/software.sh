@@ -16,8 +16,6 @@ export LFS_TGT=x86_64-pc-linux-gnu
 
 mkdir -p $HOME/bin
 cp newmod.sh $HOME/bin
-cp age-bioinformatics.rc $INSTALL_MOD_ROOT
-source $INSTALL_MOD_ROOT/age-bioinformatics.rc
 
 #rm -rf $MODS #$HOME/.R_LIBS_USER $HOME/.Python
 #rm -rf $HOME/.R_LIBS_USER $HOME/.Python
@@ -27,6 +25,9 @@ mkdir -p $MODS $SOFT $SOUR $MODF $LIN $LFS $LOGS && \
     mkdir -p $MODF/bioinformatics $MODF/general $MODF/libs $MODF/linux && \
     mkdir -p $LFS/lib $LFS/bin $LFS/include && \
     ln -sv $LFS/lib $LFS/lib64
+
+echo "export MODULEPATH=\$MODULEPATH:$MODF/libs:$MODF/general:$MODF/bioinformatics" > $INSTALL_MOD_ROOT/age-bioinformatics.rc
+source $INSTALL_MOD_ROOT/age-bioinformatics.rc
 
 export PATH=$HOME/bin:$PATH
 #export LD_LIBRARY_PATH=$LFS/lib:$LD_LIBRARY_PATH
@@ -317,7 +318,6 @@ if [ ! -f $MODF/libs/openssl/1.1.0c ]; then
     srun -o $LOGS/openssl-1.1.0c.out $LOGS/openssl-1.1.0c.sh # -o $LOGS/freetype-2.7.out
 fi
 
-rm $MODF/general/rlang/3.3.2
 if [ ! -f $MODF/general/rlang/3.3.2 ]; then
 	echo 'rlang-3.3.2'
 	echo '#!/bin/bash
@@ -353,9 +353,7 @@ if [ ! -f $MODF/general/rlang/3.3.2 ]; then
 	srun -o $LOGS/rlang-3.3.2.out $LOGS/rlang-3.3.2.sh #-o $LOGS/r-3.3.2.out
 fi
 module load rlang
-#R CMD ldd /u/jboucas/modules/software/rlang/3.3.2/lib64/R/bin/exec/R
-R CMD INSTALL ~/openssl_0.9.5.tar.gz
-#rm $MODF/general/python/2.7.12
+
 if [ ! -f $MODF/general/python/2.7.12 ]; then
 	echo 'python-2.7.12'
 	echo '#!/bin/bash
