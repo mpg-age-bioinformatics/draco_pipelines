@@ -1,0 +1,1 @@
+export MODULEPATH=$MODULEPATH:/u/jboucas/modules/modulefiles/libs:/u/jboucas/modules/modulefiles/general:/u/jboucas/modules/modulefiles/bioinformatics

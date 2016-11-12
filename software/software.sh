@@ -2,9 +2,10 @@
 
 umask 022
 
-export USER_NAME=$USER
+#export USER_NAME=$USER
 #export HOME=/u/$USER
-export MODS=/u/$USER_NAME/modules
+export INSTALL_MOD_ROOT=/u/$USER
+export MODS=$INSTALL_MOD_ROOT/modules
 export SOFT=$MODS/software
 export SOUR=$MODS/sources
 export MODF=$MODS/modulefiles
@@ -15,6 +16,8 @@ export LFS_TGT=x86_64-pc-linux-gnu
 
 mkdir -p $HOME/bin
 cp newmod.sh $HOME/bin
+cp age-bioinformatics.rc $INSTALL_MOD_ROOT
+source $INSTALL_MOD_ROOT/age-bioinformatics.rc
 
 #rm -rf $MODS #$HOME/.R_LIBS_USER $HOME/.Python
 #rm -rf $HOME/.R_LIBS_USER $HOME/.Python
