@@ -628,13 +628,10 @@ module load rlang && srun Rscript ~/pack.install.R
 
 # installing AGEpy
 module load python/2.7.12
-module load rlang
-module load mkl/11.3
-export LD_LIBRARY_PATH=/mpcdf/soft/SLES114/common/intel/ps2016.3/16.0/linux/mkl/lib/intel64:$LD_LIBRARY_PATH
+module load rlang/3.3.2
 python -m ensurepip --user
 pip install pip --user --upgrade  
 cd $HOME && git clone https://github.com/mpg-age-bioinformatics/AGEpy
-cd $HOME/AGEpy
-    CFLAGS="-I$SOFT/ncurses/6.0/include/ncurses -I$SOFT/libevent/2.0.22/include -I$SOFT/bzip2/1.0.6/include -I$SOFT/xz/5.2.2/include -I$SOFT/pcre/8.39/include -I$SOFT/curl/7.51.0/include -I$SOFT/openblas/0.2.19/include -I/u/jboucas/modules/software/rlang/3.3.2/lib64/R/include" LDFLAGS="-L$SOFT/ncurses/6.0/lib -L$SOFT/libevent/2.0.22/lib -L$SOFT/bzip2/1.0.6/lib -L$SOFT/xz/5.2.2/lib -L$SOFT/pcre/8.39/lib -L$SOFT/curl/7.51.0/lib -L$SOFT/openblas/0.2.19/lib -L/mpcdf/soft/SLES114/common/intel/ps2016.3/16.0/linux/mkl/lib/intel64 -L/u/jboucas/modules/software/r/3.3.2/lib64/R/lib" python setup.py develop --user
+cd $HOME/AGEpy && python setup.py develop --user
 
 exit
