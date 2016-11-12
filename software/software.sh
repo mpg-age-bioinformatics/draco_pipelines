@@ -275,6 +275,34 @@ if [ ! -f $MODF/libs/freetype/2.7 ]; then
 fi
 module load freetype/2.7
 
+if [ ! -f $MODF/libs/openssl/1.1.0c ]; then
+    echo 'openssl-1.1.0c'
+    echo '#!/bin/bash
+    module load libz/1.2.8
+	module list
+	rm -rf $SOUR/openssl-1.1.0c $SOFT/openssl/1.1.0c
+    cd $SOUR
+    wget -O d.tar.gz https://www.openssl.org/source/openssl-1.1.0c.tar.gz
+    mv d.tar.gz openssl-1.1.0c.tar.gz
+    tar -zxvf openssl-1.1.0c.tar.gz
+    cd openssl-1.1.0c
+    mkdir -p $SOFT/openssl/1.1.0c
+    export LDFLAGS=-L$SOFT/libz/1.2.8/lib 
+    export CFLAGS=-I$SOFT/libz/1.2.8/include
+    ./config --prefix=$SOFT/openssl/1.1.0c --openssldir=$SOFT/openssl/1.1.0c/etc/ssl --libdir=lib shared zlib-dynamic 
+	make depend 
+    make
+	make install
+    newmod.sh \
+    -s openssl \
+    -p $MODF/libs/ \
+    -v 1.1.0c \
+    -d 1.1.0c
+    ' > $LOGS/openssl-1.1.0c.sh
+    chmod 755 $LOGS/openssl-1.1.0c.sh
+    srun -o $LOGS/openssl-1.1.0c.out $LOGS/openssl-1.1.0c.sh # -o $LOGS/freetype-2.7.out
+fi
+
 rm $MODF/general/rlang/3.3.2
 if [ ! -f $MODF/general/rlang/3.3.2 ]; then
 	echo 'rlang-3.3.2'
@@ -287,7 +315,7 @@ if [ ! -f $MODF/general/rlang/3.3.2 ]; then
     tar -xzf R-3.3.2.tar.gz && \
     cd R-3.3.2 && \
     mkdir -p $SOFT/rlang/3.3.2/bin && 
-    ./configure --prefix=$SOFT/rlang/3.3.2 CFLAGS="-I$SOFT/libz/1.2.8/include -I$SOFT/freetype/2.7/include -I$SOFT/ncurses/6.0/include/ncurses -I$SOFT/libevent/2.0.22/include -I$SOFT/bzip2/1.0.6/include -I$SOFT/xz/5.2.2/include -I$SOFT/pcre/8.39/include -I$SOFT/curl/7.51.0/include" LDFLAGS="-L$SOFT/libz/1.2.8/lib -L$SOFT/freetype/2.7/lib -L$SOFT/ncurses/6.0/lib -L$SOFT/libevent/2.0.22/lib -L$SOFT/bzip2/1.0.6/lib -L$SOFT/xz/5.2.2/lib -L$SOFT/pcre/8.39/lib -L$SOFT/curl/7.51.0/lib" --with-readline --with-tcltk --enable-BLAS-shlib --enable-R-profiling --enable-R-shlib=yes --enable-memory-profiling --with-blas --with-lapack
+    ./configure --prefix=$SOFT/rlang/3.3.2 CFLAGS="-I$SOFT/openssl/1.1.0c/include/openssl -I$SOFT/libz/1.2.8/include -I$SOFT/freetype/2.7/include -I$SOFT/ncurses/6.0/include/ncurses -I$SOFT/libevent/2.0.22/include -I$SOFT/bzip2/1.0.6/include -I$SOFT/xz/5.2.2/include -I$SOFT/pcre/8.39/include -I$SOFT/curl/7.51.0/include" LDFLAGS="-L$SOFT/openssl/1.1.0c/lib -L$SOFT/libz/1.2.8/lib -L$SOFT/freetype/2.7/lib -L$SOFT/ncurses/6.0/lib -L$SOFT/libevent/2.0.22/lib -L$SOFT/bzip2/1.0.6/lib -L$SOFT/xz/5.2.2/lib -L$SOFT/pcre/8.39/lib -L$SOFT/curl/7.51.0/lib" --with-readline --with-tcltk --enable-BLAS-shlib --enable-R-profiling --enable-R-shlib=yes --enable-memory-profiling --with-blas --with-lapack
     # other options -with-blas --with-lapack --with-cairo --with-jpeglib CFLAGS="-I$LFS/include" LDFLAGS="-L$LFS/lib"
     make && make install && \
     newmod.sh \
@@ -311,9 +339,9 @@ if [ ! -f $MODF/general/rlang/3.3.2 ]; then
 	srun -o $LOGS/rlang-3.3.2.out $LOGS/rlang-3.3.2.sh #-o $LOGS/r-3.3.2.out
 fi
 module load rlang
-R CMD ldd /u/jboucas/modules/software/rlang/3.3.2/lib64/R/bin/exec/R
-
-rm $MODF/general/python/2.7.12
+#R CMD ldd /u/jboucas/modules/software/rlang/3.3.2/lib64/R/bin/exec/R
+R CMD INSTALL ~/openssl_0.9.5.tar.gz
+#rm $MODF/general/python/2.7.12
 if [ ! -f $MODF/general/python/2.7.12 ]; then
 	echo 'python-2.7.12'
 	echo '#!/bin/bash
@@ -327,7 +355,7 @@ if [ ! -f $MODF/general/python/2.7.12 ]; then
     tar xzf python-2.7.12.tgz && \
     cd Python-2.7.12 && \
     mkdir -p $SOFT/python/2.7.12/bin && \
-    #./configure --prefix=$SOFT/python/2.7.12 CFLAGS="-I$SOFT/libz/1.2.8/include -I$SOFT/freetype/2.7/include -I$SOFT/ncurses/6.0/include/ncurses -I$SOFT/openblas/0.2.19/include" LDFLAGS="-L$SOFT/libz/1.2.8/lib -L$SOFT/freetype/2.7/lib -L$SOFT/openblas/0.2.19/lib" && \
+    #./configure --prefix=$SOFT/python/2.7.12 CFLAGS="-I$SOFT/openssl/1.1.0c/include  -I$SOFT/libz/1.2.8/include -I$SOFT/freetype/2.7/include -I$SOFT/ncurses/6.0/include/ncurses -I$SOFT/openblas/0.2.19/include" LDFLAGS="-L$SOFT/openssl/1.1.0c/lib -L$SOFT/libz/1.2.8/lib -L$SOFT/freetype/2.7/lib -L$SOFT/openblas/0.2.19/lib" && \
     ./configure --prefix=$SOFT/python/2.7.12 CLFAGS="-I$SOFT/openblas/0.2.19/include -I$SOFT/ncurses/6.0/include/ncurses" LDFLAGS=-L$SOFT/openblas/0.2.19/lib
 	make && make install && \
     newmod.sh \
@@ -618,6 +646,26 @@ if [ ! -f $MODF/bioinformatics/skewer/0.2.2 ]; then
 	srun -o $LOGS/skewer-0.2.2.out $LOGS/skewer-0.2.2.sh
 fi
 
+module load python/2.7.12
+module load rlang/3.3.2
+python -m ensurepip
+pip install pip --upgrade
+
+cd $SOUR
+wget -o d.tar.gz https://github.com/jeroenooms/openssl/archive/v0.9.5.tar.gz
+mv d.tar.gz openssl_0.9.5.tar.gz
+export PATH=$SOFT/openssl/1.1.0c/lib/:$PATH
+export PKG_CONFIG_PATH=$SOFT/openssl/1.1.0c/lib/pkgconfig:$PKG_CONFIG_PATH
+R CMD INSTALL --configure-vars='INCLUDE_DIR=$SOFT/openssl/1.1.0c/include LIB_DIR=/u/jboucas/modules/software/openssl/1.1.0c/lib' -l $SOFT/rlang/3.3.2/lib64/R/library openssl_0.9.5.tar.gz
+git clone https://github.com/ropensci/git2r.git
+R CMD INSTALL --configure-vars='INCLUDE_DIR=$SOFT/openssl/1.1.0c/include LIB_DIR=/u/jboucas/modules/software/openssl/1.1.0c/lib' -l $SOFT/rlang/3.3.2/lib64/R/library git2r
+
+echo "install.packages(c('repr', 'IRdisplay', 'evaluate', 'crayon', 'pbdZMQ', 'devtools', 'uuid', 'digest'), c('$SOFT/rlang/3.3.2/lib64/R/library')  ,repos='http://ftp5.gwdg.de/pub/misc/cran/', dependencies=TRUE )" > ~/jupyter.install.R
+echo "devtools::install_github('IRkernel/IRkernel',lib=c('$SOFT/rlang/3.3.2/lib64/R/library'))" >> ~/jupyter.install.R
+echo "IRkernel::installspec(name = 'ir332', displayname = 'R 3.3.2',user = FALSE )" >> ~/jupyter.install.R
+unset R_LIBS_USER
+Rscript ~/jupyter.install.R
+
 chmod -R 755 $MODS
 
 exit
@@ -633,5 +681,23 @@ python -m ensurepip --user
 pip install pip --user --upgrade  
 cd $HOME && git clone https://github.com/mpg-age-bioinformatics/AGEpy
 cd $HOME/AGEpy && python setup.py develop --user
+
+cd $HOME
+wget -o d.tar.gz https://github.com/jeroenooms/openssl/archive/v0.9.5.tar.gz
+mv d.tar.gz openssl_0.9.5.tar.gz
+export PATH=$SOFT/openssl/1.1.0c/lib/:$PATH
+export PKG_CONFIG_PATH=$SOFT/openssl/1.1.0c/lib/pkgconfig:$PKG_CONFIG_PATH 
+#LDFLAGS=-L/u/jboucas/modules/software/openssl/1.1.0c/lib CFLAGS=-I/u/jboucas/modules/software/openssl/1.1.0c/include ./configure 
+
+R CMD INSTALL --configure-vars='INCLUDE_DIR=$SOFT/openssl/1.1.0c/include LIB_DIR=/u/jboucas/modules/software/openssl/1.1.0c/lib' openssl_0.9.5.tar.gz 
+
+git clone https://github.com/ropensci/git2r.git
+R CMD INSTALL --configure-vars='INCLUDE_DIR=$SOFT/openssl/1.1.0c/include LIB_DIR=/u/jboucas/modules/software/openssl/1.1.0c/lib' git2r
+
+install.packages(c('git2r'),repos='http://ftp5.gwdg.de/pub/misc/cran/', dependencies=TRUE )
+echo "install.packages(c('repr', 'IRdisplay', 'evaluate', 'crayon', 'pbdZMQ', 'devtools', 'uuid', 'digest'), repos='http://ftp5.gwdg.de/pub/misc/cran/', dependencies=TRUE )" > ~/jupyter.install.R
+echo "devtools::install_github('IRkernel/IRkernel')" >> ~/jupyter.install.R
+echo "IRkernel::installspec(name = 'ir332', displayname = 'R 3.3.2')" >> ~/jupyter.install.R 
+Rscript ~/jupyter.install.R
 
 exit

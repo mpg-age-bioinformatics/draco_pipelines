@@ -92,6 +92,25 @@ This folder contains the files required to install the software for the pipeline
 
 `bash_profile` an example of a `.bash_profile` 
 
+**jupyter**
+
+You can install jupyter with:
+
+```bash
+module load python/2.7.12
+pip install jupyter --user
+```
+
+Follow the instructions here for setting up a *jupyter notebook* as a server:
+
+[http://jupyter-notebook.readthedocs.io/en/latest/public_server.html](http://jupyter-notebook.readthedocs.io/en/latest/public_server.html) 
+
+To access your notebook you will need to start your VPN - more info here:
+
+[https://www.mpcdf.mpg.de/services/network/vpn](https://www.mpcdf.mpg.de/services/network/vpn)
+
+Run 'ip addr show' to see your IP address.
+
 #### tuxedo-slurm.sh
 
 *Made for SLURM & Environment Modules Project*
