@@ -56,6 +56,30 @@ if [ ! -f $MODF/general/java/8.0.111 ]; then
 	srun -o $LOGS/java-8.0.111.out $LOGS/java-8.0.111.sh
 fi
 
+if [ ! -f $MODF/libs/libz/1.2.8 ]; then
+	echo 'zlib-1.2.8'
+	echo '#!/bin/bash
+	module list
+	cd $SOUR
+	wget -O l.tar.gz http://zlib.net/zlib-1.2.8.tar.gz
+	mv l.tar.gz zlib-1.2.8.tar.gz
+	tar -zxvf zlib-1.2.8.tar.gz 
+	cd zlib-1.2.8
+	mkdir $SOFT/libz/1.2.8
+	./configure --prefix=$SOFT/libz/1.2.8
+	make
+	make install 
+    newmod.sh \
+    -s libz \
+    -p $MODF/libs/ \
+    -v 1.2.8 \
+    -d 1.2.8
+    ' > $LOGS/libz-1.2.8.sh
+    chmod 755 $LOGS/libz-1.2.8.sh
+    srun -o $LOGS/libz-1.2.8.out $LOGS/libz-1.2.8.sh
+fi
+
+# http://www.linuxfromscratch.org/lfs/view/development/chapter06/zlib.html for shared option 
 if [ ! -f $MODF/libs/libevent/2.0.22 ]; then
 	echo 'libevent-2.0.22'
 	echo '#!/bin/bash
@@ -225,18 +249,46 @@ if [ ! -f $MODF/libs/openblas/0.2.19 ]; then
 fi
 module load openblas/0.2.19
 
+if [ ! -f $MODF/libs/freetype/2.7 ]; then
+	echo 'freetype-2.7'
+	echo '#!/bin/bash
+	module list
+	cd $SOUR
+	wget -O d.tar.gz http://downloads.sourceforge.net/project/freetype/freetype2/2.7/freetype-2.7.tar.gz
+	mv d.tar.gz freetype-2.7.tar.gz
+	tar -zxvf freetype-2.7.tar.gz
+	cd freetype-2.7
+	mkdir -p $SOFT/freetype/2.7
+	export LDFLAGS=-L$SOFT/bzip2/1.0.6/lib 
+	export CFLAGS=-I$SOFT/bzip2/1.0.6/include
+	./configure --prefix=$SOFT/freetype/2.7
+	make
+	make install
+    newmod.sh \
+    -s freetype \
+    -p $MODF/libs/ \
+    -v 2.7 \
+    -d 2.7
+    ' > $LOGS/freetype-2.7.sh
+    chmod 755 $LOGS/freetype-2.7.sh
+    srun -o $LOGS/freetype-2.7.out $LOGS/freetype-2.7.sh # -o $LOGS/freetype-2.7.out
+fi
+module load freetype/2.7
+
+rm $MODF/general/rlang/3.3.2
 if [ ! -f $MODF/general/rlang/3.3.2 ]; then
 	echo 'rlang-3.3.2'
 	echo '#!/bin/bash
+	module load libz/1.2.8
 	module list
-	rm -rf $SOUR/R-3.3.2 $SOFT/r/3.3.2
+	rm -rf $SOUR/R-3.3.2 $SOFT/rlang/3.3.2
 	cd $SOUR && \
     wget -O d.tar.gz http://ftp5.gwdg.de/pub/misc/cran/src/base/R-3/R-3.3.2.tar.gz && \
     mv d.tar.gz R-3.3.2.tar.gz && \
     tar -xzf R-3.3.2.tar.gz && \
     cd R-3.3.2 && \
     mkdir -p $SOFT/rlang/3.3.2/bin && 
-    ./configure --prefix=$SOFT/rlang/3.3.2 CFLAGS="-I$SOFT/ncurses/6.0/include/ncurses -I$SOFT/libevent/2.0.22/include -I$SOFT/bzip2/1.0.6/include -I$SOFT/xz/5.2.2/include -I$SOFT/pcre/8.39/include -I$SOFT/curl/7.51.0/include -I$SOFT/openblas/0.2.19/include" LDFLAGS="-L$SOFT/ncurses/6.0/lib -L$SOFT/libevent/2.0.22/lib -L$SOFT/bzip2/1.0.6/lib -L$SOFT/xz/5.2.2/lib -L$SOFT/pcre/8.39/lib -L$SOFT/curl/7.51.0/lib -L$SOFT/openblas/0.2.19/lib" --with-readline --with-tcltk --enable-BLAS-shlib --enable-R-profiling --enable-R-shlib --enable-memory-profiling
+    ./configure --prefix=$SOFT/rlang/3.3.2 CFLAGS="-I$SOFT/libz/1.2.8/include -I$SOFT/freetype/2.7/include -I$SOFT/ncurses/6.0/include/ncurses -I$SOFT/libevent/2.0.22/include -I$SOFT/bzip2/1.0.6/include -I$SOFT/xz/5.2.2/include -I$SOFT/pcre/8.39/include -I$SOFT/curl/7.51.0/include -I$SOFT/openblas/0.2.19/include" LDFLAGS="-L$SOFT/libz/1.2.8/lib -L$SOFT/freetype/2.7/lib -L$SOFT/ncurses/6.0/lib -L$SOFT/libevent/2.0.22/lib -L$SOFT/bzip2/1.0.6/lib -L$SOFT/xz/5.2.2/lib -L$SOFT/pcre/8.39/lib -L$SOFT/curl/7.51.0/lib -L$SOFT/openblas/0.2.19/lib" --with-readline --with-tcltk --enable-BLAS-shlib --enable-R-profiling --enable-R-shlib --enable-memory-profiling --with-blas --with-lapack
     # other options -with-blas --with-lapack --with-cairo --with-jpeglib CFLAGS="-I$LFS/include" LDFLAGS="-L$LFS/lib"
     make && make install && \
     newmod.sh \
@@ -245,23 +297,28 @@ if [ ! -f $MODF/general/rlang/3.3.2 ]; then
     -v 3.3.2 \
     -d 3.3.2 &&
     echo "set home $::env(HOME)" >> $MODF/general/rlang/3.3.2
-    echo "exec /bin/mkdir -p \$home/.R_LIBS_USER/3.3.2" >> $MODF/general/rlang/3.3.2
-    echo "setenv R_LIBS_USER \$home/.R_LIBS_USER/3.3.2" >> $MODF/general/rlang/3.3.2
+    echo "exec /bin/mkdir -p \$home/.R/3.3.2/R_LIBS_USER/" >> $MODF/general/rlang/3.3.2
+    echo "setenv R_LIBS_USER \$home/.R/3.3.2/R_LIBS_USER" >> $MODF/general/rlang/3.3.2
     echo "prepend-path LD_LIBRARY_PATH $SOFT/r/3.3.2/lib64/R/lib" >> $MODF/general/rlang/3.3.2
     echo "prepend-path CPATH $SOFT/r/3.3.2/lib64/R/include" >> $MODF/general/rlang/3.3.2
     echo "prepend-path C_INCLUDE_PATH $SOFT/r/3.3.2/lib64/R/include" >> $MODF/general/rlang/3.3.2
     echo "prepend-path CPLUS_INCLUDE_PATH $SOFT/r/3.3.2/lib64/R/include" >> $MODF/general/rlang/3.3.2
     echo "prepend-path OBJC_INCLUDE_PATH $SOFT/r/3.3.2/lib64/R/include" >> $MODF/general/rlang/3.3.2
-    mv $SOFT/rlang/3.3.2/lib64/R/lib/libRblas.so $SOFT/rlang/3.3.2/lib64/R/lib/old_libRblas.so
-    ln -s $SOFT/openblas/0.2.19/lib/libopenblas.so $SOFT/rlang/3.3.2/lib64/R/lib/libRblas.so
+    echo "module load gcc/6.2" >> $MODF/general/rlang/3.3.2
+	#mv $SOFT/rlang/3.3.2/lib64/R/lib/libRblas.so $SOFT/rlang/3.3.2/lib64/R/lib/old_libRblas.so
+    #ln -s $SOFT/openblas/0.2.19/lib/libopenblas.so $SOFT/rlang/3.3.2/lib64/R/lib/libRblas.so
 	' > $LOGS/rlang-3.3.2.sh
 	chmod 755 $LOGS/rlang-3.3.2.sh
 	srun -o $LOGS/rlang-3.3.2.out $LOGS/rlang-3.3.2.sh #-o $LOGS/r-3.3.2.out
 fi
+module load rlang
+ldd /u/jboucas/modules/software/rlang/3.3.2/lib64/R/bin/exec/R
 
+#rm $MODF/general/python/2.7.12
 if [ ! -f $MODF/general/python/2.7.12 ]; then
 	echo 'python-2.7.12'
 	echo '#!/bin/bash
+	module load libz/1.2.8
 	module list
 	rm -rf $SOUR/python-2.7.12 $SOFT/python/2.7.12
 	cd $SOUR && \
@@ -270,7 +327,7 @@ if [ ! -f $MODF/general/python/2.7.12 ]; then
     tar xzf python-2.7.12.tgz && \
     cd Python-2.7.12 && \
     mkdir -p $SOFT/python/2.7.12/bin && \
-    ./configure --prefix=$SOFT/python/2.7.12 CFLAGS="-I$SOFT/ncurses/6.0/include/ncurses -I$SOFT/openblas/0.2.19/include" LDFLAGS="-L$SOFT/openblas/0.2.19/lib" && \
+    ./configure --prefix=$SOFT/python/2.7.12 CFLAGS="-I$SOFT/libz/1.2.8/include -I$SOFT/freetype/2.7/include -I$SOFT/ncurses/6.0/include/ncurses -I$SOFT/openblas/0.2.19/include" LDFLAGS="-L$SOFT/libz/1.2.8/lib -L$SOFT/freetype/2.7/lib -L$SOFT/openblas/0.2.19/lib" && \
     make && make install && \
     newmod.sh \
     -s python \
@@ -291,7 +348,10 @@ if [ ! -f $MODF/general/python/2.7.12 ]; then
     echo "setenv PYTHONHOME $SOFT/python/2.7.12/" >> $MODF/general/python/2.7.12
     echo "setenv PYTHONUSERBASE \$home/.Python/2.7.12/" >> $MODF/general/python/2.7.12
     echo "exec /bin/mkdir -p \$home/.Python/2.7.12/pythonpath/site-packages" >> $MODF/general/python/2.7.12
-	echo "prepend-path PYTHONPATH \$home/.Python/2.7.12/pythonpath/site-packages" >> $MODF/general/python/2.7.12  
+	#echo "prepend-path PYTHONPATH \$home/.Python/2.7.12/pythonpath/site-packages" >> $MODF/general/python/2.7.12
+	echo "module load gcc/6.2 bzip2/1.0.6 xz/5.2.2 ncurses/6.0 libevent/2.0.22 pcre/8.39 curl/7.51.0 openblas/0.2.19 freetype/2.7" >> $MODF/general/python/2.7.12
+	echo "setenv CFLAGS \"-I$SOFT/libz/1.2.8/include -I$SOFT/freetype/2.7/include -I$SOFT/ncurses/6.0/include/ncurses -I$SOFT/libevent/2.0.22/include -I$SOFT/bzip2/1.0.6/include -I$SOFT/xz/5.2.2/include -I$SOFT/pcre/8.39/include -I$SOFT/curl/7.51.0/include -I$SOFT/openblas/0.2.19/include -I/u/jboucas/modules/software/rlang/3.3.2/lib64/R/include\"" >> $MODF/general/python/2.7.12
+	echo "setenv LDFLAGS \"-L$SOFT/libz/1.2.8/lib -L$SOFT/freetype/2.7/lib -L$SOFT/ncurses/6.0/lib -L$SOFT/libevent/2.0.22/lib -L$SOFT/bzip2/1.0.6/lib -L$SOFT/xz/5.2.2/lib -L$SOFT/pcre/8.39/lib -L$SOFT/curl/7.51.0/lib -L$SOFT/openblas/0.2.19/lib -L/mpcdf/soft/SLES114/common/intel/ps2016.3/16.0/linux/mkl/lib/intel64 -L/u/jboucas/modules/software/r/3.3.2/lib64/R/lib\"" >> $MODF/general/python/2.7.12
     ' > $LOGS/python-2.7.12.sh
 	chmod 755 $LOGS/python-2.7.12.sh
 	srun -o $LOGS/python-2.7.12.out $LOGS/python-2.7.12.sh #-o $LOGS/python-2.7.12.out
@@ -570,6 +630,7 @@ module load rlang
 module load mkl/11.3
 export LD_LIBRARY_PATH=/mpcdf/soft/SLES114/common/intel/ps2016.3/16.0/linux/mkl/lib/intel64:$LD_LIBRARY_PATH
 python -m ensurepip --user
+pip install pip --user --upgrade  
 cd $HOME && git clone https://github.com/mpg-age-bioinformatics/AGEpy
 cd $HOME/AGEpy
     CFLAGS="-I$SOFT/ncurses/6.0/include/ncurses -I$SOFT/libevent/2.0.22/include -I$SOFT/bzip2/1.0.6/include -I$SOFT/xz/5.2.2/include -I$SOFT/pcre/8.39/include -I$SOFT/curl/7.51.0/include -I$SOFT/openblas/0.2.19/include -I/u/jboucas/modules/software/rlang/3.3.2/lib64/R/include" LDFLAGS="-L$SOFT/ncurses/6.0/lib -L$SOFT/libevent/2.0.22/lib -L$SOFT/bzip2/1.0.6/lib -L$SOFT/xz/5.2.2/lib -L$SOFT/pcre/8.39/lib -L$SOFT/curl/7.51.0/lib -L$SOFT/openblas/0.2.19/lib -L/mpcdf/soft/SLES114/common/intel/ps2016.3/16.0/linux/mkl/lib/intel64 -L/u/jboucas/modules/software/r/3.3.2/lib64/R/lib" python setup.py develop --user
