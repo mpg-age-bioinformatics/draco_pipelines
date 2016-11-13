@@ -14,7 +14,20 @@ If you wish to use the software installed by the core facility you can simply so
 source /u/jboucas/age-bioinformatics.rc
 ```
 
-List the available modules with `module avail`.
+List the available modules with `module avail` and you will now see the additonal modules:
+
+```bash
+----------------------------------------------------------------------------------- /u/jboucas/modules/modulefiles/libs ------------------------------------------------------------------------------------
+bzip2/1.0.6(default)     freetype/2.7(default)    libz/1.2.8(default)      openblas/0.2.19(default) pcre/8.39(default)
+curl/7.51.0(default)     libevent/2.0.22(default) ncurses/6.0(default)     openssl/1.1.0c(default)  xz/5.2.2(default)
+
+---------------------------------------------------------------------------------- /u/jboucas/modules/modulefiles/general ----------------------------------------------------------------------------------
+java/8.0.111(default)  jup/0.1(default)       pigz/2.3.4(default)    python/2.7.12(default) rlang/3.3.2(default)   tmux/2.3(default)      tools/0.1(default)
+
+------------------------------------------------------------------------------ /u/jboucas/modules/modulefiles/bioinformatics -------------------------------------------------------------------------------
+bedtools/2.26.0(default) bwa/0.7.15(default)      fastqc/0.11.5(default)   samtools/1.3.1(default)  star/2.5.2b(default)     tophat/2.1.1(default)
+bowtie/2.2.9(default)    cufflinks/2.2.1(default) hisat/2.0.4(default)     skewer/0.2.2(default)    stringtie/1.3.0(default)
+```
 
 An example on how to integrate it in your `.bash_profile` can be found in this example of a [.bash_profile](software/bash_profile).
 
