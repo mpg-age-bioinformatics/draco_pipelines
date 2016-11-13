@@ -2,8 +2,6 @@
 
 umask 022
 
-#export USER_NAME=$USER
-#export HOME=/u/$USER
 export INSTALL_MOD_ROOT=/u/$USER
 export MODS=$INSTALL_MOD_ROOT/modules
 export SOFT=$MODS/software
@@ -17,10 +15,6 @@ export LFS_TGT=x86_64-pc-linux-gnu
 mkdir -p $HOME/bin
 cp newmod.sh $HOME/bin
 
-#rm -rf $MODS #$HOME/.R_LIBS_USER $HOME/.Python
-#rm -rf $HOME/.R_LIBS_USER $HOME/.Python
-#rm -rf $HOME/.Python
-
 mkdir -p $MODS $SOFT $SOUR $MODF $LIN $LFS $LOGS && \
     mkdir -p $MODF/bioinformatics $MODF/general $MODF/libs $MODF/linux && \
     mkdir -p $LFS/lib $LFS/bin $LFS/include && \
@@ -33,9 +27,6 @@ cp install.AGEpy $SOUR
 cp install.jupyter.R.kernel.3.3.2 $SOUR
 
 export PATH=$HOME/bin:$PATH
-#export LD_LIBRARY_PATH=$LFS/lib:$LD_LIBRARY_PATH
-#export CPATH=$LFS/include:$CPATH
-#export C_INCLUDE_PATH=$LFS/include:$C_INCLUDE_PATH
 
 module load autotools
 module load cmake/3.6
@@ -97,7 +88,6 @@ if [ ! -f $MODF/libs/libz/1.2.8 ]; then
     srun -o $LOGS/libz-1.2.8.out $LOGS/libz-1.2.8.sh
 fi
 
-# http://www.linuxfromscratch.org/lfs/view/development/chapter06/zlib.html for shared option 
 if [ ! -f $MODF/libs/libevent/2.0.22 ]; then
 	echo 'libevent-2.0.22'
 	echo '#!/bin/bash
@@ -157,14 +147,8 @@ if [ ! -f $MODF/libs/bzip2/1.0.6 ]; then
     sed -i "18s/.*/CC\=gcc -fPIC/" Makefile  && \
     COMPILE_FLAGS+=-fPIC make Makefile-libbz2_so && COMPILE_FLAGS+=-fPIC make clean && COMPILE_FLAGS+=-fPIC make && \
     COMPILE_FLAGS+=-fPIC make -n install PREFIX=$SOFT/bzip2/1.0.6 && \
-    COMPILE_FLAGS+=-fPIC make install PREFIX=$SOFT/bzip2/1.0.6' > $LOGS/bzip2-1.0.6.sh
-	#echo "sed -i 's@\(ln -s -f \)\$(PREFIX)/bin/@\1@' Makefile" >> $LOGS/bzip2-1.0.6.sh
-	#echo 'sed -i "s@(PREFIX)/man@(PREFIX)/share/man@g" Makefile
-	#echo 'make -f Makefile-libbz2_so
- 	#   make clean
- 	#   make
- 	#   make PREFIX=$SOFT/bzip2/1.0.6 install 
-	echo 'cp -v bzip2-shared $SOFT/bzip2/1.0.6/bin/bzip2
+    COMPILE_FLAGS+=-fPIC make install PREFIX=$SOFT/bzip2/1.0.6
+	cp -v bzip2-shared $SOFT/bzip2/1.0.6/bin/bzip2
     cp -av libbz2.so* $SOFT/bzip2/1.0.6/lib 
     newmod.sh \
     -s bzip2 \
@@ -370,7 +354,6 @@ if [ ! -f $MODF/general/python/2.7.12 ]; then
     tar xzf python-2.7.12.tgz && \
     cd Python-2.7.12 && \
     mkdir -p $SOFT/python/2.7.12/bin && \
-    #./configure --prefix=$SOFT/python/2.7.12 CFLAGS="-I$SOFT/openssl/1.1.0c/include  -I$SOFT/libz/1.2.8/include -I$SOFT/freetype/2.7/include -I$SOFT/ncurses/6.0/include/ncurses -I$SOFT/openblas/0.2.19/include" LDFLAGS="-L$SOFT/openssl/1.1.0c/lib -L$SOFT/libz/1.2.8/lib -L$SOFT/freetype/2.7/lib -L$SOFT/openblas/0.2.19/lib" && \
     ./configure --prefix=$SOFT/python/2.7.12 CLFAGS="-I$SOFT/openblas/0.2.19/include -I$SOFT/ncurses/6.0/include/ncurses" LDFLAGS=-L$SOFT/openblas/0.2.19/lib
 	make && make install && \
     newmod.sh \
@@ -392,11 +375,9 @@ if [ ! -f $MODF/general/python/2.7.12 ]; then
     echo "setenv PYTHONHOME $SOFT/python/2.7.12/" >> $MODF/general/python/2.7.12
     echo "setenv PYTHONUSERBASE \$home/.Python/2.7.12/" >> $MODF/general/python/2.7.12
     echo "exec /bin/mkdir -p \$home/.Python/2.7.12/pythonpath/site-packages" >> $MODF/general/python/2.7.12
-	#echo "prepend-path PYTHONPATH \$home/.Python/2.7.12/pythonpath/site-packages" >> $MODF/general/python/2.7.12
 	echo "module load gcc/6.2 bzip2/1.0.6 xz/5.2.2 ncurses/6.0 libevent/2.0.22 pcre/8.39 curl/7.51.0 freetype/2.7 openblas/0.2.19" >> $MODF/general/python/2.7.12
 	echo "setenv CFLAGS \"-I$SOFT/openblas/0.2.19/include -I$SOFT/ncurses/6.0/include/ncurses -I$SOFT/libevent/2.0.22/include -I$SOFT/bzip2/1.0.6/include -I$SOFT/xz/5.2.2/include -I$SOFT/pcre/8.39/include -I$SOFT/curl/7.51.0/include -I$SOFT/openblas/0.2.19/include -I/u/jboucas/modules/software/rlang/3.3.2/lib64/R/include\"" >> $MODF/general/python/2.7.12
 	echo "setenv LDFLAGS \"-L$SOFT/openblas/0.2.19/lib -L$SOFT/ncurses/6.0/lib -L$SOFT/libevent/2.0.22/lib -L$SOFT/bzip2/1.0.6/lib -L$SOFT/xz/5.2.2/lib -L$SOFT/pcre/8.39/lib -L$SOFT/curl/7.51.0/lib -L/mpcdf/soft/SLES114/common/intel/ps2016.3/16.0/linux/mkl/lib/intel64 -L/u/jboucas/modules/software/r/3.3.2/lib64/R/lib\"" >> $MODF/general/python/2.7.12
-    # openblas/0.2.19 -L$SOFT/openblas/0.2.19/lib
 	' > $LOGS/python-2.7.12.sh
 	chmod 755 $LOGS/python-2.7.12.sh
 	srun -o $LOGS/python-2.7.12.out $LOGS/python-2.7.12.sh #-o $LOGS/python-2.7.12.out
@@ -684,37 +665,5 @@ unset R_LIBS_USER
 Rscript ~/jupyter.install.R
 
 chmod -R 755 $MODS
-
-exit
-
-echo 'source("http://bioconductor.org/biocLite.R")' > ~/pack.install.R && \
-echo 'biocLite(c("biomaRt"), ask=FALSE)'  >> ~/pack.install.R && \
-module load rlang && srun Rscript ~/pack.install.R
-
-# installing AGEpy
-module load python/2.7.12
-module load rlang/3.3.2
-python -m ensurepip --user
-pip install pip --user --upgrade  
-cd $HOME && git clone https://github.com/mpg-age-bioinformatics/AGEpy
-cd $HOME/AGEpy && python setup.py develop --user
-
-cd $HOME
-wget -o d.tar.gz https://github.com/jeroenooms/openssl/archive/v0.9.5.tar.gz
-mv d.tar.gz openssl_0.9.5.tar.gz
-export PATH=$SOFT/openssl/1.1.0c/lib/:$PATH
-export PKG_CONFIG_PATH=$SOFT/openssl/1.1.0c/lib/pkgconfig:$PKG_CONFIG_PATH 
-#LDFLAGS=-L/u/jboucas/modules/software/openssl/1.1.0c/lib CFLAGS=-I/u/jboucas/modules/software/openssl/1.1.0c/include ./configure 
-
-R CMD INSTALL --configure-vars='INCLUDE_DIR=$SOFT/openssl/1.1.0c/include LIB_DIR=/u/jboucas/modules/software/openssl/1.1.0c/lib' openssl_0.9.5.tar.gz 
-
-git clone https://github.com/ropensci/git2r.git
-R CMD INSTALL --configure-vars='INCLUDE_DIR=$SOFT/openssl/1.1.0c/include LIB_DIR=/u/jboucas/modules/software/openssl/1.1.0c/lib' git2r
-
-install.packages(c('git2r'),repos='http://ftp5.gwdg.de/pub/misc/cran/', dependencies=TRUE )
-echo "install.packages(c('repr', 'IRdisplay', 'evaluate', 'crayon', 'pbdZMQ', 'devtools', 'uuid', 'digest'), repos='http://ftp5.gwdg.de/pub/misc/cran/', dependencies=TRUE )" > ~/jupyter.install.R
-echo "devtools::install_github('IRkernel/IRkernel')" >> ~/jupyter.install.R
-echo "IRkernel::installspec(name = 'ir332', displayname = 'R 3.3.2')" >> ~/jupyter.install.R 
-Rscript ~/jupyter.install.R
 
 exit
