@@ -6,110 +6,46 @@ More info on the draco cluster can be found on the web page of the [Max Planck C
 
 All users registered on [https://mpg-age-bioinformatics.github.io](https://mpg-age-bioinformatics.github.io) are by defenition also registered at the MPCDF.
 
-If you wish to use software already installed by us add the following line to you `.bash_profile` with for eg. 
-
-1. `vim .bash_profile`
-
-2. Press *i* for inserting text.
-
-3. Copy paste this line `export MODULEPATH=$MODULEPATH:/u/jboucas/modules/modulefiles/general:/u/jboucas/modules/modulefiles/bioinformatics::/u/jboucas/modules/modulefiles/libs
-
-4. Copy this line as well `export TMPDIR=/ptmp/$USER`
-
-5. Press "Esc" to escape *insert* modus
-
-6. Type `:wq` to write and quit
-
-Information on the different partions at the MPCDF can be found with `sinfo`
-
-If you wish to know more about each available node, use: 
+If you wish to use the software installed by the core facility you can simply source the file:
 
 ```bash
-PARTITION    AVAIL  TIMELIMIT  NODES  STATE NODELIST
-interactive*    up    2:00:00      2    mix draco[03-04]
-small           up 1-00:00:00      5  alloc dra[0761-0762,0764-0766]
-small           up 1-00:00:00      3   idle dra[0763,0767-0768]
-express         up      30:00      1   drng dra0145
-express         up      30:00    756  alloc dra[0001-0044,0046-0095,0097-0144,0146-0271,0273-0312,0314-0447,0449-0606,0608-0670,0672-0732,0734-0762,0764-0766]
-express         up      30:00      9   idle dra[0045,0096,0272,0313,0448,0607,0671,0733,0763]
-short           up    4:00:00      1   drng dra0145
-short           up    4:00:00    756  alloc dra[0001-0044,0046-0095,0097-0144,0146-0271,0273-0312,0314-0447,0449-0606,0608-0670,0672-0732,0734-0762,0764-0766]
-short           up    4:00:00      9   idle dra[0045,0096,0272,0313,0448,0607,0671,0733,0763]
-general         up 1-00:00:00      1   drng dra0145
-general         up 1-00:00:00    756  alloc dra[0001-0044,0046-0095,0097-0144,0146-0271,0273-0312,0314-0447,0449-0606,0608-0670,0672-0732,0734-0762,0764-0766]
-general         up 1-00:00:00      9   idle dra[0045,0096,0272,0313,0448,0607,0671,0733,0763]
-fat01           up 1-00:00:00      2  alloc dra[0771-0772]
-fat01           up 1-00:00:00      3   idle dra[0769-0770,0773]
-fat             up 1-00:00:00      2  alloc dra[0771-0772]
-fat             up 1-00:00:00      2   idle dra[0769-0770]
-gpu             up 1-00:00:00    102  alloc drag[001-102]
-viz             up 1-00:00:00      4   idle drav[01-04]
+source /u/jboucas/age-bioinformatics.rc
 ```
 
-For more information on each node use for example:
+An example on how to integrate it in your `.bash_profile` can be found in this example of a [.bash_profile](software/bash_profile).
 
-`sinfo -N -n dra[0045,0096,0272,0313,0448,0607,0671,0733,0763] -O cpus,cpusload,freemem,nodehost,partitionname`
+As shown in the [.bash_profile](software/bash_profile) and as requested by the MPCDF please do not forget to change your `TMPDIR` with `export TMPDIR=/ptmp/$USER`.
 
-```
-CPUS                CPU_LOAD            FREE_MEM            HOSTNAMES           PARTITION
-64                  0.03                123084              dra0045             express
-64                  0.03                123084              dra0045             general
-64                  0.03                123084              dra0045             short
-64                  0.01                123073              dra0096             express
-64                  0.01                123073              dra0096             general
-64                  0.01                123073              dra0096             short
-64                  0.02                123020              dra0272             express
-64                  0.02                123020              dra0272             general
-64                  0.02                123020              dra0272             short
-64                  0.01                123033              dra0313             express
-64                  0.01                123033              dra0313             general
-64                  0.01                123033              dra0313             short
-64                  0.01                123051              dra0448             express
-64                  0.01                123051              dra0448             general
-64                  0.01                123051              dra0448             short
-64                  0.01                123021              dra0607             express
-64                  0.01                123021              dra0607             general
-64                  0.01                123021              dra0607             short
-64                  0.01                123092              dra0671             express
-64                  0.01                123092              dra0671             general
-64                  0.01                123092              dra0671             short
-64                  0.01                122965              dra0733             express
-64                  0.01                122965              dra0733             general
-64                  0.01                122965              dra0733             short
-64                  0.01                122901              dra0763             small
-64                  0.01                122901              dra0763             express
-64                  0.01                122901              dra0763             general
-64                  0.01                122901              dra0763             short
-```
-
-#### software
-
-This folder contains the files required to install the software for the pipelines here presented.
-
-`software.sh` a bash script for installation of all required software
-
-`newmod.sh` required by *software.sh* this script generates the module files for each installed software.
-
-`bash_profile` an example of a `.bash_profile` 
-
-**jupyter**
-
-You can install jupyter with:
+*Jupyter* is already installed. Users who whish to run *jupyter* and have source the `age-bioinformatics.rc` can do `module laod jup` and follow the instructions [here](http://jupyter-notebook.readthedocs.io/en/latest/public_server.html)  on how to generate a config file for running a notebook server. Please do not choose crazy ports and avoid redundancy of the 9999. VPN connection will be required and information can be found [here](https://www.mpcdf.mpg.de/services/network/vpn). You can then start your jupyter notebook server with:
 
 ```bash
-module load python/2.7.12
-pip install jupyter --user
+module load jup
+srun jup
 ```
+*IMPORTANT*: simply running srun will take to the partition *interactive*. Your job will not leave forever - do nott forget to save your work in a regular fashion. You can allways user the argument `-p <partition>` to specify the partiton you would to like to use eg. `srun -p general jup`. It is also here **IMPORTANT* to realize that this will submit a job that will resever one full node from the *general*  partition - to change this use the `--cpus-per-task` and `--mem` arguments to lower your reservation. You can allways check your reservation with `scontrol show job <jobid>`.
 
-Follow the instructions here for setting up a *jupyter notebook* as a server:
+If you wish to install the R kernel for jupyter you can simply `source /u/jboucas/modules/sources/install.jupyter.R.kernel.3.3.2`.
 
-[http://jupyter-notebook.readthedocs.io/en/latest/public_server.html](http://jupyter-notebook.readthedocs.io/en/latest/public_server.html) 
+You can use `sinfo` for getting information on all partitions.
 
-To access your notebook you will need to start your VPN - more info here:
+If you want to look for free resources you can:
 
-[https://www.mpcdf.mpg.de/services/network/vpn](https://www.mpcdf.mpg.de/services/network/vpn)
+```bash
+module load tools
+freedraco
+```
+also,
 
-Run 'ip addr show' to see your IP address.
+```bash
+freedraco --help
+USAGE:
+  freedraco [OPTIONS]
+OPTIONS:
+  -h, --help                : show this help and exist
+  -p, --partiton            : partition to query. For multiple partitions use eg. '(general|viz)'.
+  -c, --max_cpu_load        : maximum cpu load in % (default: 71.0)
+  -m, --minimum_free_memory : minimum free memory in MBs (default: 100)
+```
 
 #### tuxedo-slurm.sh
 
