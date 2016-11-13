@@ -1,5 +1,7 @@
 # draco_pipelines
 
+## General information
+
 This repo contains pipelines running on the draco cluster.
 
 More info on the draco cluster can be found on the web page of the [Max Planck Computing & Data Facility (MPCDF)](http://www.mpcdf.mpg.de/services/computing/draco).
@@ -22,6 +24,8 @@ As shown in the [.bash_profile](software/bash_profile) and as requested by the M
 module load jup
 srun jup
 ```
+To see what `module load jup` is doing you can always do `module show jup`.
+
 **IMPORTANT**: simply running srun will take to the partition *interactive*. Your job will not leave forever - do nott forget to save your work in a regular fashion. You can allways user the argument `-p <partition>` to specify the partiton you would to like to use eg. `srun -p general jup`. It is also here **IMPORTANT** to realize that this will submit a job that will resever one full node from the *general*  partition - to change this use the `--cpus-per-task` and `--mem` arguments to lower your reservation. You can allways check your reservation with `scontrol show job <jobid>`.
 
 We do not have a *R-studio* server running at the MPCDF but users who wish to perform such kind of interactive work can install the R kernel for *Jupyter* and run *Jupyter* as shown above.
@@ -48,6 +52,8 @@ OPTIONS:
   -c, --max_cpu_load        : maximum cpu load in % (default: 71.0)
   -m, --minimum_free_memory : minimum free memory in MBs (default: 100)
 ```
+
+## pipelines
 
 #### tuxedo-slurm.sh
 
@@ -83,7 +89,7 @@ For usage check the help output:
 
 Other useful tools like `aDiff` and `QC.R` can also be found on the [htseq-tools repository](https://github.com/mpg-age-bioinformatics/htseq-tools).
 
-### Contact
+## Contact
 
 bioinformatics@age.mpg.de
 
