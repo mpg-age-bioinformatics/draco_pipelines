@@ -31,7 +31,10 @@ bowtie/2.2.9(default)    cufflinks/2.2.1(default) hisat/2.0.4(default)     skewe
 
 An example on how to integrate it in your `.bash_profile` can be found in this example of a [.bash_profile](software/bash_profile).
 
-As shown in the [.bash_profile](software/bash_profile) and as requested by the MPCDF please do not forget to change your `TMPDIR` with `export TMPDIR=/ptmp/$USER`.
+As shown in the [.bash_profile](software/bash_profile) and as requested by the MPCDF please do not forget to change your `TMPDIR` with 
+```bash
+export TMPDIR=/ptmp/$USER
+```
 
 *Jupyter* is already installed. Users who whish to run *jupyter* and have sourced the `age-bioinformatics.rc` can do `module laod jup` and follow the instructions [here](http://jupyter-notebook.readthedocs.io/en/latest/public_server.html)  on how to generate a config file for running a notebook server. Please do not choose crazy ports and avoid redundancy of the 9999. VPN connection will be required and information can be found [here](https://www.mpcdf.mpg.de/services/network/vpn). You can then start your jupyter notebook server with:
 
@@ -49,8 +52,10 @@ You can allways check your reservation with `scontrol show job <jobid>` and chec
 
 We do not have an *R-studio* server running at the MPCDF but users who wish to perform such kind of interactive work can install the R kernel for *Jupyter* and run *Jupyter* as shown above.
 
-If you wish to install the R kernel for jupyter you can simply `source /u/jboucas/modules/sources/install.jupyter.R.kernel.3.3.2`.
-
+If you wish to install the R kernel for jupyter you can simply 
+```bash
+source /u/jboucas/modules/sources/install.jupyter.R.kernel.3.3.2`.
+```
 You can use `sinfo` for getting information on all partitions.
 
 If you want to look for free resources you can:
