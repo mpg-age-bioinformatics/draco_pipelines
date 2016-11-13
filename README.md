@@ -14,6 +14,8 @@ If you wish to use the software installed by the core facility you can simply so
 source /u/jboucas/age-bioinformatics.rc
 ```
 
+List the available modules with `module list`.
+
 An example on how to integrate it in your `.bash_profile` can be found in this example of a [.bash_profile](software/bash_profile).
 
 As shown in the [.bash_profile](software/bash_profile) and as requested by the MPCDF please do not forget to change your `TMPDIR` with `export TMPDIR=/ptmp/$USER`.
