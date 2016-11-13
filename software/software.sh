@@ -47,12 +47,16 @@ fi
 
 echo "tools/0.1"
 mkdir -p $SOFT/tools/0.1/bin
-cp freedraco $SOFT/tools/0.1/bin
-newmod.sh \
--s tools \
--p $MODF/general/ \
--v 0.1 \
--d 0.1
+if [ ! -f $SOFT/tools/0.1/bin/freedraco ]; then
+	cp freedraco $SOFT/tools/0.1/bin
+fi
+if [ ! -f $MODF/general/tools/0.1 ]; then
+	newmod.sh \
+	-s tools \
+	-p $MODF/general/ \
+	-v 0.1 \
+	-d 0.1
+fi
 
 if [ ! -f $MODF/general/java/8.0.111 ]; then 
 	echo 'java-8.0.111'
@@ -651,6 +655,30 @@ if [ ! -f $MODF/bioinformatics/skewer/0.2.2 ]; then
 	srun -o $LOGS/skewer-0.2.2.out $LOGS/skewer-0.2.2.sh
 fi
 
+if [ ! -f $MODF/bioinformatics/bedtools/2.26.0 ]; then
+    echo 'bedtools-2.26.0'
+    echo '#!/bin/bash
+    module list
+    rm -rf $SOUR/bedtools-2.26.0
+    cd $SOUR && \
+    wget -O d.tar.gz https://github.com/arq5x/bedtools2/archive/v2.26.0.tar.gz && \
+    mv d.tar.gz bedtools-2.26.0.tar.gz && \
+    tar -zxvf bedtools-2.26.0.tar.gz && \
+    cd bedtools2-2.26.0 && \
+    mkdir -p $SOFT/bedtools/2.26.0/ && \
+    make
+	cp -r bin $SOFT/bedtools/2.26.0
+    newmod.sh \
+    -s bedtools \
+    -p $MODF/bioinformatics/ \
+    -v 2.26.0 \
+    -d 2.26.0
+    ' > $LOGS/bedtools-2.26.0.sh
+    chmod 755 $LOGS/bedtools-2.26.0.sh
+    srun -o $LOGS/bedtools-2.26.0.out $LOGS/bedtools-2.26.0.sh
+fi
+
+exit
 
 module load python/2.7.12
 module load rlang/3.3.2
