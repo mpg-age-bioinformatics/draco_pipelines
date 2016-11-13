@@ -1,9 +1,35 @@
 #!/bin/bash
+BIN=$(basename $0)
+USAGE="USAGE:
+  $BIN [OPTIONS]
+OPTIONS:
+  -h, --help            : show this help and exist
+  -c, --check           : check the address of the latest running instance
+"
+while [[ $# -gt 0 ]]
+do
+  case $1 in
+    -h|--help)
+      echo "$USAGE"
+      exit
+      ;;
+    -c|--check)
+      CHECK=true
+      shift
+      ;;
+  esac
+  shift
+done
+
+if [[ $CHECK ]]; then
+	cat $HOME/.last.jupyter.address
+	exit
+fi 
 
 ip=$(ip addr show | grep "scope global eth4" | cut -d "/" -f1 | cut -d "t" -f2 | cut -d " " -f2) 
 port=$(cat ${HOME}/.jupyter/jupyter_notebook_config.py | grep "c.NotebookApp.port =" | grep -v "#" | cut -d " " -f3) 
 
-printf "\n\n\nConnect your browser to:\nhttps://${ip}:${port}\n\n\n\n"
+printf "\n\n\nConnect your browser to:\nhttps://${ip}:${port}\n\n\n\n" | tee $HOME/.last.jupyter.address
 
 jupyter notebook
 
