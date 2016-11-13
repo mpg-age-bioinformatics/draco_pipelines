@@ -26,7 +26,7 @@ srun jup
 ```
 To see what `module load jup` is doing you can always do `module show jup`.
 
-**IMPORTANT**: simply running `srun` will take to the partition *interactive*. Your job will not live forever - do not forget to save your work in a regular fashion. You can allways use the argument `-p <partition>` to specify the partiton you would like to use eg. `srun -p general jup`. It is also here **IMPORTANT** to realize that this will submit a job that will reseve one full node from the *general*  partition - to change this use the `--cpus-per-task` and `--mem` arguments to lower your reservation eg. 
+**IMPORTANT**: simply running `srun` will take to the partition *interactive*. Your job will not live forever - do not forget to save your work in a regular fashion. You can allways use the argument `-p <partition>` to specify the partiton you would like to use eg. `srun -p general jup`. It is also here **IMPORTANT** to realize that this will submit a job that will reserve one full node from the *general*  partition - to change this use the `--cpus-per-task` and `--mem` arguments to lower your reservation eg. 
 ```bash
 srun -p general --cpus-per-task=1 --mem=8gb jup
 ```
