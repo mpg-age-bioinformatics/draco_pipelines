@@ -45,6 +45,15 @@ if [ ! -f $MODF/general/jup/0.1 ]; then
 	echo "module load python" >> $MODF/general/jup/0.1
 fi
 
+echo "tools/0.1"
+mkdir -p $SOFT/tools/0.1/bin
+cp freedraco $SOFT/tools/0.1/bin
+newmod.sh \
+-s tools \
+-p $MODF/general/ \
+-v 0.1 \
+-d 0.1
+
 if [ ! -f $MODF/general/java/8.0.111 ]; then 
 	echo 'java-8.0.111'
 	echo '#!/bin/bash

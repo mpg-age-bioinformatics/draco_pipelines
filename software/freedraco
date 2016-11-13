@@ -1,12 +1,15 @@
 #!/bin/bash
 BIN=$(basename $0)
 PART=general
+MAXLOAD=71.0
+FREEMEM=100
 USAGE="USAGE:
   $BIN [OPTIONS]
 OPTIONS:
   -h, --help                : show this help and exist
-  -p, --partiton            : partition to query
-  -m, --max_cpu_load        : maximum cpu load
+  -p, --partiton            : partition to query. For multiple partitions use eg. '(general|viz)'.
+  -c, --max_cpu_load        : maximum cpu load in % (default: 71.0)
+  -m, --minimum_free_memory : minimum free memory in MBs (default: 100)
 "
 while [[ $# -gt 0 ]]
 do
@@ -19,13 +22,16 @@ do
       PART=$2
       shift
       ;;
-    -m|--max_cpu_load)
+    -c|--max_cpu_load)
       MAXLOAD=$2
+      shift
+      ;;
+    -m|--minimum_free_memory)
+      FREEMEM=$2
       shift
       ;;
   esac
   shift
 done
 
-
-sinfo -N -O partitionname,nodehost,cpus,cpusload,freemem  | egrep '$PART' 
+sinfo -N -O partitionname,nodehost,cpus,cpusload,freemem  | egrep $PART | awk '$5 >= '$FREEMEM' {print $0}' | awk '$4 <= '$MAXLOAD' {print $0}'
