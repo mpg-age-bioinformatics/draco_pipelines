@@ -26,9 +26,13 @@ srun jup
 ```
 To see what `module load jup` is doing you can always do `module show jup`.
 
-**IMPORTANT**: simply running srun will take to the partition *interactive*. Your job will not leave forever - do nott forget to save your work in a regular fashion. You can allways user the argument `-p <partition>` to specify the partiton you would to like to use eg. `srun -p general jup`. It is also here **IMPORTANT** to realize that this will submit a job that will resever one full node from the *general*  partition - to change this use the `--cpus-per-task` and `--mem` arguments to lower your reservation. You can allways check your reservation with `scontrol show job <jobid>`.
+**IMPORTANT**: simply running `srun` will take to the partition *interactive*. Your job will not live forever - do not forget to save your work in a regular fashion. You can allways use the argument `-p <partition>` to specify the partiton you would like to use eg. `srun -p general jup`. It is also here **IMPORTANT** to realize that this will submit a job that will reseve one full node from the *general*  partition - to change this use the `--cpus-per-task` and `--mem` arguments to lower your reservation eg. 
+```bash
+srun -p general --cpus-per-task=1 --mem=8gb jup
+```
+You can allways check your reservation with `scontrol show job <jobid>` and check the queue with `squeue` (try also `squeue -u <user name>`).
 
-We do not have a *R-studio* server running at the MPCDF but users who wish to perform such kind of interactive work can install the R kernel for *Jupyter* and run *Jupyter* as shown above.
+We do not have an *R-studio* server running at the MPCDF but users who wish to perform such kind of interactive work can install the R kernel for *Jupyter* and run *Jupyter* as shown above.
 
 If you wish to install the R kernel for jupyter you can simply `source /u/jboucas/modules/sources/install.jupyter.R.kernel.3.3.2`.
 
