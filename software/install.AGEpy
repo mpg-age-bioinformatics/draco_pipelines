@@ -1,0 +1,11 @@
+echo 'source("http://bioconductor.org/biocLite.R")' > ~/pack.install.R && \
+echo 'biocLite(c("biomaRt"), ask=FALSE)'  >> ~/pack.install.R && \
+module load rlang && srun Rscript ~/pack.install.R
+
+# installing AGEpy
+module load python/2.7.12
+module load rlang/3.3.2
+module load git
+cd $HOME && git clone https://github.com/mpg-age-bioinformatics/AGEpy
+cd $HOME/AGEpy && srun python setup.py install --user
+

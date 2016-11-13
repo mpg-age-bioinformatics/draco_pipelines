@@ -1,0 +1,31 @@
+#!/bin/bash
+BIN=$(basename $0)
+PART=general
+USAGE="USAGE:
+  $BIN [OPTIONS]
+OPTIONS:
+  -h, --help                : show this help and exist
+  -p, --partiton            : partition to query
+  -m, --max_cpu_load        : maximum cpu load
+"
+while [[ $# -gt 0 ]]
+do
+  case $1 in
+    -h|--help)
+      echo "$USAGE"
+      exit
+      ;;
+    -p|--partiton)
+      PART=$2
+      shift
+      ;;
+    -m|--max_cpu_load)
+      MAXLOAD=$2
+      shift
+      ;;
+  esac
+  shift
+done
+
+
+sinfo -N -O partitionname,nodehost,cpus,cpusload,freemem  | egrep '$PART' 

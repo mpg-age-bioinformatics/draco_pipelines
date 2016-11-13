@@ -1,0 +1,6 @@
+module load rlang/3.3.2
+module load python/2.7.12
+echo "IRkernel::installspec(name = 'ir332', displayname = 'R 3.3.2')" > ~/.install.jupyter.R.kernel.3.3.2
+srun Rscript ~/.install.jupyter.R.kernel.3.3.2
+rm -f ~/.install.jupyter.R.kernel.3.3.2
+

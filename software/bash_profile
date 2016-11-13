@@ -5,9 +5,9 @@ export TMPDIR=/ptmp/$USER
 module load git
 
 # shorten you PS1 to show:
-# [<draco node number>@<current directory to 30 char>]
+# [<draco node number>:<current directory to 30 char>]
 PROMPT_COMMAND='DIR=`pwd|sed -e "s!$HOME!~!"`; if [ ${#DIR} -gt 30 ]; then CurDir=${DIR:0:12}...${DIR:${#DIR}-15}; else CurDir=$DIR; fi'
-PS1="[\${HOSTNAME:5}@\$CurDir] \$ "
+PS1="[\h:\$CurDir] \$ "
 
 # load the software installed by the bioinformatics core facility of the MPI AGE
 source /u/jboucas/age-bioinformatics.rc

@@ -27,7 +27,10 @@ mkdir -p $MODS $SOFT $SOUR $MODF $LIN $LFS $LOGS && \
     ln -sv $LFS/lib $LFS/lib64
 
 echo "export MODULEPATH=\$MODULEPATH:$MODF/libs:$MODF/general:$MODF/bioinformatics" > $INSTALL_MOD_ROOT/age-bioinformatics.rc
+chmod 755 $INSTALL_MOD_ROOT/age-bioinformatics.rc
 source $INSTALL_MOD_ROOT/age-bioinformatics.rc
+cp install.AGEpy $SOUR
+cp install.jupyter.R.kernel.3.3.2 $SOUR
 
 export PATH=$HOME/bin:$PATH
 #export LD_LIBRARY_PATH=$LFS/lib:$LD_LIBRARY_PATH
@@ -663,6 +666,8 @@ module load python/2.7.12
 module load rlang/3.3.2
 python -m ensurepip
 pip install pip --upgrade
+pip install jupyter
+
 
 cd $SOUR
 wget -o d.tar.gz https://github.com/jeroenooms/openssl/archive/v0.9.5.tar.gz
@@ -675,7 +680,6 @@ R CMD INSTALL --configure-vars='INCLUDE_DIR=$SOFT/openssl/1.1.0c/include LIB_DIR
 
 echo "install.packages(c('repr', 'IRdisplay', 'evaluate', 'crayon', 'pbdZMQ', 'devtools', 'uuid', 'digest'), c('$SOFT/rlang/3.3.2/lib64/R/library')  ,repos='http://ftp5.gwdg.de/pub/misc/cran/', dependencies=TRUE )" > ~/jupyter.install.R
 echo "devtools::install_github('IRkernel/IRkernel',lib=c('$SOFT/rlang/3.3.2/lib64/R/library'))" >> ~/jupyter.install.R
-echo "IRkernel::installspec(name = 'ir332', displayname = 'R 3.3.2',user = FALSE )" >> ~/jupyter.install.R
 unset R_LIBS_USER
 Rscript ~/jupyter.install.R
 
