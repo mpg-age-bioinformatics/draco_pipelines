@@ -18,7 +18,7 @@ An example on how to integrate it in your `.bash_profile` can be found in this e
 
 As shown in the [.bash_profile](software/bash_profile) and as requested by the MPCDF please do not forget to change your `TMPDIR` with `export TMPDIR=/ptmp/$USER`.
 
-*Jupyter* is already installed. Users who whish to run *jupyter* and have source the `age-bioinformatics.rc` can do `module laod jup` and follow the instructions [here](http://jupyter-notebook.readthedocs.io/en/latest/public_server.html)  on how to generate a config file for running a notebook server. Please do not choose crazy ports and avoid redundancy of the 9999. VPN connection will be required and information can be found [here](https://www.mpcdf.mpg.de/services/network/vpn). You can then start your jupyter notebook server with:
+*Jupyter* is already installed. Users who whish to run *jupyter* and have sourced the `age-bioinformatics.rc` can do `module laod jup` and follow the instructions [here](http://jupyter-notebook.readthedocs.io/en/latest/public_server.html)  on how to generate a config file for running a notebook server. Please do not choose crazy ports and avoid redundancy of the 9999. VPN connection will be required and information can be found [here](https://www.mpcdf.mpg.de/services/network/vpn). You can then start your jupyter notebook server with:
 
 ```bash
 module load jup
