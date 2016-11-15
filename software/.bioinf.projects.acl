@@ -1,0 +1,85 @@
+#!/bin/bash
+
+LOGFILE=/u/jboucas/projects/.acl.log
+TYPEOFACTION="GIVE"
+FLAGS="r"
+
+USAGE="USAGE: 
+  $BIN [OPTIONS]  
+OPTIONS:  
+  -h, --help          : show this help and exit       
+  -u, --user          : user
+  -g, --group         : full path to group name as shown in 'ls /u/jboucas/projects' eg. Adam_Antebi
+  -p, --project       : project name as listed in the respective group folder
+  -f, --flags         : read, write flags. default: 'r'
+  -R, --recursively   : Recursively.
+  -l, --logile        : file to log changes to. default=/u/jboucas/projects/.acl.log
+  -t, --typeofaction  : type of action: GIVE | REVOKE. default: GIVE
+  -v, --verbose       : Verbose, show more.
+"
+
+while [[ $# -gt 0 ]] 
+do       
+  case $1 in       
+    -h|--help)
+      echo "$USAGE"
+      exit
+      ;;
+    -u|--user)
+      TARGETUSER=$2
+      shift
+      ;;
+    -g|--group)
+      USERGROUP=$2
+      shift
+      ;;
+    -p|--project)
+      PROJECT=$2
+      shift
+      ;;
+	-f|--flags)
+      FLAGS=$2
+      shift
+      ;;
+	-R|--recursively)
+	  REC=-R
+	  shift
+	  ;;
+    -l|--logfile)
+      LOGFILE=$2
+      shift
+      ;;
+    -t|--typeofaction)
+      TYPEOFACTION=$2
+      shift
+      ;;
+	-v|--verbose)
+	  VER=true
+      shift
+      ;; 
+  esac
+  shift
+done
+
+if [ $TYPEOFACTION == "GIVE" ]; then
+	setfacl ${REC} -m user:${TARGETUSER}:${FLAGS}x ${USERGROUP}/${PROJECT}
+	setfacl -m user:${TARGETUSER}:rx ${USERGROUP}/${PROJECT} ${USERGROUP} /u/jboucas/projects
+	echo "$(date) setfacl ${REC} user:${TARGETUSER}:rwx ${USERGROUP}/${PROJECT}" >> ${LOGFILE}  
+	echo "$(date) setfacl -m user:${u}:rx ${USERGROUP}/${PROJECT} ${USERGROUP} /u/jboucas/projects" >> ${LOGFILE}
+	echo "Access to ${USERGROUP}/${PROJECT} granted to ${TARGETUSER}" 
+	echo "Current ACLs for ${USERGROUP}/${PROJECT}"
+	if [[ $VER ]]; then getfacl -R ${USERGROUP}/${PROJECT}; fi
+	exit
+fi
+
+if [ $TYPEOFACTION == "REVOKE" ]; then
+	setfacl ${REC} -x user:${TARGETUSER} ${USERGROUP}/${PROJECT}
+	echo "$(date) setfacl ${REC} -x user:${TARGETUSER} ${USERGROUP}/${PROJECT}" >> ${LOGFILE}
+	echo "Access to ${USERGROUP}/${PROJECT} revoked to ${TARGETUSER}"
+	echo "Current ACLs for ${USERGROUP}/${PROJECT}"
+	if [[ $VER ]]; then getfacl -R ${USERGROUP}/${PROJECT}; fi
+    exit
+fi
+
+echo "Nothing to do. '-t' must be GIVE or REVOKE."
+exit
