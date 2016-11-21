@@ -381,7 +381,7 @@ if [ ! -f $MODF/general/python/2.7.12 ]; then
     echo "prepend-path PATH \$home/.Python/2.7.12/bin" >> $MODF/general/python/2.7.12
     echo "set jupyter_runtime_dir \$home/.Python/2.7.12/jupyter/run" >> $MODF/general/python/2.7.12
     echo "exec /bin/mkdir -p \$jupyter_runtime_dir" >> $MODF/general/python/2.7.12
-    echo "setenv JUPYER_RUNTIME_DIR \$home/.Python/2.7.12/jupyter/run" >> $MODF/general/python/2.7.12
+    echo "setenv JUPYTER_RUNTIME_DIR \$home/.Python/2.7.12/jupyter/run" >> $MODF/general/python/2.7.12
     echo "set jupyter_data_dir \$home/.Python/2.7.12/jupyter/data" >> $MODF/general/python/2.7.12
     echo "exec /bin/mkdir -p \$jupyter_data_dir" >> $MODF/general/python/2.7.12
     echo "setenv JUPYTER_DATA_DIR \$home/.Python/2.7.12/jupyter/data" >> $MODF/general/python/2.7.12
