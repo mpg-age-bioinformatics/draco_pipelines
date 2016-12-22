@@ -113,6 +113,12 @@ For usage check the help output:
 
 Other useful tools like `aDiff` and `QC.R` can also be found on the [htseq-tools repository](https://github.com/mpg-age-bioinformatics/htseq-tools).
 
+## Software
+
+All software is installed in agreement with the code in the [software folder](software).
+
+
+
 ## Contact
 
 bioinformatics@age.mpg.de
