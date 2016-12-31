@@ -437,7 +437,8 @@ if [ ! -f $MODF/general/tmux/2.3 ]; then
     echo "set home $::env(HOME)" >> $MODF/general/tmux/2.3
     echo "module load ncurses/6.0" >> $MODF/general/tmux/2.3
     echo "module load libevent/2.0.22" >> $MODF/general/tmux/2.3
-    echo "setenv TMUX_TMPDIR \$home/.tmux.socket" >> $MODF/general/tmux/2.3
+    exec "exec /bin/mkdir -p \$home/.tmux.socket" >> $MODF/general/tmux/2.3
+	echo "setenv TMUX_TMPDIR \$home/.tmux.socket" >> $MODF/general/tmux/2.3
 	' > $LOGS/tmux-2.3.sh
 	chmod 755 $LOGS/tmux-2.3.sh
 	srun -o $LOGS/tmux-2.3.out $LOGS/tmux-2.3.sh
