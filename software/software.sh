@@ -681,6 +681,125 @@ if [ ! -f $MODF/bioinformatics/bedtools/2.26.0 ]; then
     srun -o $LOGS/bedtools-2.26.0.out $LOGS/bedtools-2.26.0.sh
 fi
 
+if [ ! -f $MODF/bioinformatics/vcftools/0.1.14 ]; then
+	echo 'vcftools-0.1.14'
+	echo '#!/bin/bash
+	module list
+	rm -rf $SOUR/vcftools-0.1.14
+	cd $SOUR && \
+	wget -O d.tar.gz https://github.com/vcftools/vcftools/releases/download/v0.1.14/vcftools-0.1.14.tar.gz && \
+	mv d.tar.gz vcftools-0.1.14.tar.gz && \
+	tar -zxvf vcftools-0.1.14.tar.gz && \
+	cd vcftools-0.1.14 && \
+	mkdir -p $SOFT/vcftools/0.1.14 && \
+	./configure --prefix=$SOFT/vcftools/0.1.14 && make && make install && \
+    newmod.sh \
+    -s vcftools \
+    -p $MODF/bioinformatics/ \
+    -v 0.1.14 \
+    -d 0.1.14
+    ' > $LOGS/vcftools-0.1.14.sh
+    chmod 755 $LOGS/vcftools-0.1.14.sh
+    srun -o $LOGS/vcftools-0.1.14.out $LOGS/vcftools-0.1.14.sh
+fi
+
+if [ ! -f $MODF/bioinformatics/igvtools/2.3.89 ]; then
+    echo 'igvtools-2.3.89'
+    echo '#!/bin/bash
+    module list
+    rm -rf $SOUR/IGVTools
+	rm -rf $SOFT/igvtools/2.3.89
+    cd $SOUR && \
+    wget -O d.tar.gz http://data.broadinstitute.org/igv/projects/downloads/igvtools_2.3.89.zip && \
+	mv d.tar.gz igvtools_2.3.89.zip && \
+	unzip igvtools_2.3.89.zip && \
+	cd IGVTools && \ 
+    mkdir -p $SOFT/igvtools/2.3.89/bin && \
+    cp i* $SOFT/igvtools/2.3.89/bin
+    newmod.sh \
+    -s igvtools \
+    -p $MODF/bioinformatics/ \
+    -v 2.3.89 \
+    -d 2.3.89
+    ' > $LOGS/igvtools-2.3.89.sh
+    chmod 755 $LOGS/igvtools-2.3.89.sh
+    srun -o $LOGS/igvtools-2.3.89.out $LOGS/igvtools-2.3.89.sh
+fi
+
+if [ ! -f $MODF/bioinformatics/gatk/3.4.46 ]; then 
+	echo 'gatk-3.4.46'
+	echo '#!/bin/bash
+	module list
+	rm -rf $SOUR/GenomeAnalysisTK-3.4-46-gbc0262
+	cd $SOUR && \
+	wget -O d.tar.bz2 https://datashare.mpcdf.mpg.de/s/gml1aS2HUXfspXW/download && \
+	mkdir -p GenomeAnalysisTK-3.4-46-gbc02625 && \
+	mv d.tar.bz2 GenomeAnalysisTK-3.4-46-gbc02625.tar.bz2 && \
+	cp GenomeAnalysisTK-3.4-46-gbc02625.tar.bz2 GenomeAnalysisTK-3.4-46-gbc02625/ && \
+	cd GenomeAnalysisTK-3.4-46-gbc02625 && \
+	tar -jxvf GenomeAnalysisTK-3.4-46-gbc02625.tar.bz2 && \
+	mkdir -p $SOFT/gatk/3.4.46/bin && \
+	cp *.jar $SOFT/gatk/3.4.46/bin && \ 
+	cp -r resources $SOFT/gatk/3.4.46/ && \
+	chmod 755 $SOFT/gatk/3.4.46/bin/*
+	newmod.sh \
+    -s gatk \
+    -p $MODF/bioinformatics/ \
+    -v 3.4.46 \
+    -d 3.4.46
+	echo "module load java" >> $MODF/bioinformatics/gatk/3.4.46
+	echo "setenv GATK $SOFT/gatk/3.4.46/bin/GenomeAnalysisTK.jar" >> $MODF/bioinformatics/gatk/3.4.46
+    ' > $LOGS/gatk-3.4.46.sh
+    chmod 755 $LOGS/gatk-3.4.46.sh
+    srun -o $LOGS/gatk-3.4.46.out $LOGS/gatk-3.4.46.sh
+fi
+
+if [ ! -f $MODF/bioinformatics/picard/2.8.1 ]; then
+    echo 'picard-2.8.1'
+    echo '#!/bin/bash
+    module list
+    rm -rf $SOUR/picard-2.8.1.jar
+    cd $SOUR && \
+    wget -O d.jar https://github.com/broadinstitute/picard/releases/download/2.8.1/picard.jar && \
+    mv d.jar picard-2.8.1.jar && \
+    mkdir -p $SOFT/picard/2.8.1/bin && \
+    cp picard-2.8.1.jar $SOFT/picard/2.8.1/bin/picard.jar && \ 
+    newmod.sh \
+    -s picard \
+    -p $MODF/bioinformatics/ \
+    -v 2.8.1 \
+    -d 2.8.1
+    echo "module load java" >> $MODF/bioinformatics/picard/2.8.1
+    echo "setenv PICARD $SOFT/picard/2.8.1/bin/picard.jar" >> $MODF/bioinformatics/picard/2.8.1
+    ' > $LOGS/picard-2.8.1.sh
+    chmod 755 $LOGS/picard-2.8.1.sh
+    srun -o $LOGS/picard-2.8.1.out $LOGS/picard-2.8.1.sh
+fi
+
+rm -rf $MODF/bioinformatics/sratoolkit/2.8.1
+
+if [ ! -f $MODF/bioinformatics/sratoolkit/2.8.1 ]; then
+    echo 'sratoolkit-2.8.1'
+    echo '#!/bin/bash
+    module list
+    rm -rf $SOUR/sratoolkit.2.8.1-centos_linux64.tar.gz
+    cd $SOUR && \
+    wget -O d.tar.gz http://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.8.1/sratoolkit.2.8.1-centos_linux64.tar.gz && \
+    mv d.tar.gz sratoolkit.2.8.1-centos_linux64.tar.gz && \
+    tar -zxvf sratoolkit.2.8.1-centos_linux64.tar.gz && \
+	mkdir -p $SOFT/sratoolkit/2.8.1/ && \
+	cp -r sratoolkit.2.8.1-centos_linux64/*  $SOFT/sratoolkit/2.8.1/
+    newmod.sh \
+    -s sratoolkit \
+    -p $MODF/bioinformatics/ \
+    -v 2.8.1 \
+    -d 2.8.1
+    ' > $LOGS/sratoolkit-2.8.1.sh
+    chmod 755 $LOGS/sratoolkit-2.8.1.sh
+    srun -o $LOGS/sratoolkit-2.8.1.out $LOGS/sratoolkit-2.8.1.sh
+fi
+
+
 exit
 
 module load python/2.7.12
