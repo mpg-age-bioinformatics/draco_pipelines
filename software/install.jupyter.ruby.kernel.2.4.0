@@ -1,0 +1,6 @@
+#!/bin/bash
+module load jup
+module load ruby
+gem install --user-install rbczmq
+gem install --user-install iruby
+

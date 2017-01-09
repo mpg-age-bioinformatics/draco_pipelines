@@ -54,8 +54,14 @@ We do not have an *R-studio* server running at the MPCDF but users who wish to p
 
 If you wish to install the R kernel for jupyter you can simply 
 ```bash
-source /u/jboucas/modules/sources/install.jupyter.R.kernel.3.3.2`.
+source /u/jboucas/modules/sources/install.jupyter.R.kernel.3.3.2
 ```
+
+Similarly, the ruby kernel for jupyter can be installed by 
+```bash
+source /u/jboucas/modules/sources/install.jupyter.ruby.kernel.2.4.0
+```
+
 You can use `sinfo` for getting information on all partitions.
 
 If you want to look for free resources you can:

@@ -13,7 +13,7 @@ export LOGS=$MODS/installation_logs
 export LFS_TGT=x86_64-pc-linux-gnu
 
 mkdir -p $HOME/bin
-cp newmod.sh $HOME/bin
+cp newmod.sh newmod.ruby.sh $HOME/bin
 
 mkdir -p $MODS $SOFT $SOUR $MODF $LIN $LFS $LOGS && \
     mkdir -p $MODF/bioinformatics $MODF/general $MODF/libs $MODF/linux && \
@@ -25,6 +25,7 @@ chmod 755 $INSTALL_MOD_ROOT/age-bioinformatics.rc
 source $INSTALL_MOD_ROOT/age-bioinformatics.rc
 cp install.AGEpy $SOUR
 cp install.jupyter.R.kernel.3.3.2 $SOUR
+cp install.jupyter.ruby.kernel.2.4.0 $SOUR
 
 export PATH=$HOME/bin:$PATH
 
@@ -435,10 +436,11 @@ if [ ! -f $MODF/general/tmux/2.3 ]; then
     -v 2.3 \
     -d 2.3
     echo "set home $::env(HOME)" >> $MODF/general/tmux/2.3
-    echo "module load ncurses/6.0" >> $MODF/general/tmux/2.3
+    echo "set hostname $::env(HOSTNAME)" >> $MODF/general/tmux/2.3
+	echo "module load ncurses/6.0" >> $MODF/general/tmux/2.3
     echo "module load libevent/2.0.22" >> $MODF/general/tmux/2.3
-    exec "exec /bin/mkdir -p \$home/.tmux.socket" >> $MODF/general/tmux/2.3
-	echo "setenv TMUX_TMPDIR \$home/.tmux.socket" >> $MODF/general/tmux/2.3
+    echo "exec /bin/mkdir -p \$home/.tmux.socket/\$hostname" >> $MODF/general/tmux/2.3
+	echo "setenv TMUX_TMPDIR \$home/.tmux.socket/\$hostname" >> $MODF/general/tmux/2.3 
 	' > $LOGS/tmux-2.3.sh
 	chmod 755 $LOGS/tmux-2.3.sh
 	srun -o $LOGS/tmux-2.3.out $LOGS/tmux-2.3.sh
@@ -776,8 +778,6 @@ if [ ! -f $MODF/bioinformatics/picard/2.8.1 ]; then
     srun -o $LOGS/picard-2.8.1.out $LOGS/picard-2.8.1.sh
 fi
 
-rm -rf $MODF/bioinformatics/sratoolkit/2.8.1
-
 if [ ! -f $MODF/bioinformatics/sratoolkit/2.8.1 ]; then
     echo 'sratoolkit-2.8.1'
     echo '#!/bin/bash
@@ -799,6 +799,50 @@ if [ ! -f $MODF/bioinformatics/sratoolkit/2.8.1 ]; then
     srun -o $LOGS/sratoolkit-2.8.1.out $LOGS/sratoolkit-2.8.1.sh
 fi
 
+if [ ! -f $MODF/general/ruby-install/0.6.1 ]; then
+	echo 'ruby-install-0.6.1'
+	echo '#!/bin/bash
+	module list
+	rm -rf $SOUR/ruby-install-0.6.1.tar.gz
+	cd $SOUR && \ 
+	wget -O d.tar.gz https://github.com/postmodern/ruby-install/archive/v0.6.1.tar.gz && \
+	mv d.tar.gz ruby-install-0.6.1.tar.gz && \
+	tar -xzvf ruby-install-0.6.1.tar.gz && \
+	cd ruby-install-0.6.1/ && \
+	mkdir -p $SOFT/ruby-install/0.6.1 && \
+	make install PREFIX=$SOFT/ruby-install/0.6.1 && \
+	newmod.sh \
+    -s ruby-install \
+    -p $MODF/general/ \
+    -v 0.6.1 \
+    -d 0.6.1
+    ' > $LOGS/ruby-install-0.6.1.sh
+    chmod 755 $LOGS/ruby-install-0.6.1.sh
+    srun -o $LOGS/ruby-install-0.6.1.out $LOGS/ruby-install-0.6.1.sh
+fi
+
+rm -rf $MODF/general/ruby/2.4.0
+
+if [ ! -f $MODF/general/ruby/2.4.0 ]; then
+	echo 'ruby-2.4.0'
+	echo '#!/bin/bash
+	module load ruby-install
+	module list
+	#cd $SOUR && \
+	#ruby-install --rubies-dir $SOFT ruby 2.4.0 && \
+	newmod.ruby.sh \
+    -s ruby \
+    -p $MODF/general/ \
+    -v 2.4.0 \
+    -d 2.4.0
+    echo "set home $::env(HOME)" >> $MODF/general/ruby/2.4.0
+	echo "prepend-path PATH \$home/.gem/ruby/2.4.0/bin" >> $MODF/general/ruby/2.4.0
+	echo "module load gcc/6.2" >> $MODF/general/ruby/2.4.0
+	' > $LOGS/ruby-2.4.0.sh
+    chmod 755 $LOGS/ruby-2.4.0.sh
+	srun -o $LOGS/ruby-2.4.0.out $LOGS/ruby-2.4.0.sh
+fi
+	
 
 exit
 
