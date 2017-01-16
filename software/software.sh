@@ -828,8 +828,8 @@ if [ ! -f $MODF/general/ruby/2.4.0 ]; then
 	echo '#!/bin/bash
 	module load ruby-install
 	module list
-	#cd $SOUR && \
-	#ruby-install --rubies-dir $SOFT ruby 2.4.0 && \
+	cd $SOUR && \
+	ruby-install --rubies-dir $SOFT ruby 2.4.0 && \
 	newmod.ruby.sh \
     -s ruby \
     -p $MODF/general/ \
@@ -858,9 +858,9 @@ wget -o d.tar.gz https://github.com/jeroenooms/openssl/archive/v0.9.5.tar.gz
 mv d.tar.gz openssl_0.9.5.tar.gz
 export PATH=$SOFT/openssl/1.1.0c/lib/:$PATH
 export PKG_CONFIG_PATH=$SOFT/openssl/1.1.0c/lib/pkgconfig:$PKG_CONFIG_PATH
-R CMD INSTALL --configure-vars='INCLUDE_DIR=$SOFT/openssl/1.1.0c/include LIB_DIR=/u/jboucas/modules/software/openssl/1.1.0c/lib' -l $SOFT/rlang/3.3.2/lib64/R/library openssl_0.9.5.tar.gz
+R CMD INSTALL --configure-vars='INCLUDE_DIR=$SOFT/openssl/1.1.0c/include LIB_DIR=$SOFT/openssl/1.1.0c/lib' -l $SOFT/rlang/3.3.2/lib64/R/library openssl_0.9.5.tar.gz
 git clone https://github.com/ropensci/git2r.git
-R CMD INSTALL --configure-vars='INCLUDE_DIR=$SOFT/openssl/1.1.0c/include LIB_DIR=/u/jboucas/modules/software/openssl/1.1.0c/lib' -l $SOFT/rlang/3.3.2/lib64/R/library git2r
+R CMD INSTALL --configure-vars='INCLUDE_DIR=$SOFT/openssl/1.1.0c/include LIB_DIR=$SOFT/openssl/1.1.0c/lib' -l $SOFT/rlang/3.3.2/lib64/R/library git2r
 
 echo "install.packages(c('repr', 'IRdisplay', 'evaluate', 'crayon', 'pbdZMQ', 'devtools', 'uuid', 'digest'), c('$SOFT/rlang/3.3.2/lib64/R/library')  ,repos='http://ftp5.gwdg.de/pub/misc/cran/', dependencies=TRUE )" > ~/jupyter.install.R
 echo "devtools::install_github('IRkernel/IRkernel',lib=c('$SOFT/rlang/3.3.2/lib64/R/library'))" >> ~/jupyter.install.R
