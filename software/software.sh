@@ -390,8 +390,8 @@ if [ ! -f $MODF/general/python/2.7.12 ]; then
     echo "setenv PYTHONUSERBASE \$home/.Python/2.7.12/" >> $MODF/general/python/2.7.12
     echo "exec /bin/mkdir -p \$home/.Python/2.7.12/pythonpath/site-packages" >> $MODF/general/python/2.7.12
 	echo "module load gcc/6.2 bzip2/1.0.6 xz/5.2.2 ncurses/6.0 libevent/2.0.22 pcre/8.39 curl/7.51.0 freetype/2.7 openblas/0.2.19" >> $MODF/general/python/2.7.12
-	echo "setenv CFLAGS \"-I$SOFT/openblas/0.2.19/include -I$SOFT/ncurses/6.0/include/ncurses -I$SOFT/libevent/2.0.22/include -I$SOFT/bzip2/1.0.6/include -I$SOFT/xz/5.2.2/include -I$SOFT/pcre/8.39/include -I$SOFT/curl/7.51.0/include -I$SOFT/openblas/0.2.19/include -I/u/jboucas/modules/software/rlang/3.3.2/lib64/R/include\"" >> $MODF/general/python/2.7.12
-	echo "setenv LDFLAGS \"-L$SOFT/openblas/0.2.19/lib -L$SOFT/ncurses/6.0/lib -L$SOFT/libevent/2.0.22/lib -L$SOFT/bzip2/1.0.6/lib -L$SOFT/xz/5.2.2/lib -L$SOFT/pcre/8.39/lib -L$SOFT/curl/7.51.0/lib -L/mpcdf/soft/SLES114/common/intel/ps2016.3/16.0/linux/mkl/lib/intel64 -L/u/jboucas/modules/software/r/3.3.2/lib64/R/lib\"" >> $MODF/general/python/2.7.12
+	echo "setenv CFLAGS \"-I$SOFT/openblas/0.2.19/include -I$SOFT/ncurses/6.0/include/ncurses -I$SOFT/libevent/2.0.22/include -I$SOFT/bzip2/1.0.6/include -I$SOFT/xz/5.2.2/include -I$SOFT/pcre/8.39/include -I$SOFT/curl/7.51.0/include -I$SOFT/openblas/0.2.19/include -I$SOFT/rlang/3.3.2/lib64/R/include\"" >> $MODF/general/python/2.7.12
+	echo "setenv LDFLAGS \"-L$SOFT/openblas/0.2.19/lib -L$SOFT/ncurses/6.0/lib -L$SOFT/libevent/2.0.22/lib -L$SOFT/bzip2/1.0.6/lib -L$SOFT/xz/5.2.2/lib -L$SOFT/pcre/8.39/lib -L$SOFT/curl/7.51.0/lib -L/mpcdf/soft/SLES114/common/intel/ps2016.3/16.0/linux/mkl/lib/intel64 -L$SOFT/rlang/3.3.2/lib64/R/lib\"" >> $MODF/general/python/2.7.12
 	' > $LOGS/python-2.7.12.sh
 	chmod 755 $LOGS/python-2.7.12.sh
 	srun -o $LOGS/python-2.7.12.out $LOGS/python-2.7.12.sh #-o $LOGS/python-2.7.12.out
