@@ -821,8 +821,6 @@ if [ ! -f $MODF/general/ruby-install/0.6.1 ]; then
     srun -o $LOGS/ruby-install-0.6.1.out $LOGS/ruby-install-0.6.1.sh
 fi
 
-rm -rf $MODF/general/ruby/2.4.0
-
 if [ ! -f $MODF/general/ruby/2.4.0 ]; then
 	echo 'ruby-2.4.0'
 	echo '#!/bin/bash
@@ -842,7 +840,327 @@ if [ ! -f $MODF/general/ruby/2.4.0 ]; then
     chmod 755 $LOGS/ruby-2.4.0.sh
 	srun -o $LOGS/ruby-2.4.0.out $LOGS/ruby-2.4.0.sh
 fi
+
+if [ ! -f $MODF/libs/gmp/6.1.2 ]; then
+    echo 'gmp-6.1.2'
+    echo '#!/bin/bash
+    module list
+    cd $SOUR && wget -O l.tar.bz2 https://gmplib.org/download/gmp/gmp-6.1.2.tar.bz2 && \
+    mv l.tar.bz2 gmp-6.1.2.tar.bz2 && \
+    tar -jxvf gmp-6.1.2.tar.bz2 && \
+    cd gmp-6.1.2 && \
+    ./configure --prefix=$SOFT/gmp/6.1.2 && make && make check && make install && \
+    newmod.sh \
+    -s gmp \
+    -p $MODF/libs/ \
+    -v 6.1.2 \
+    -d 6.1.2
+    ' > $LOGS/gmp-6.1.2.sh
+    chmod 755 $LOGS/gmp-6.1.2.sh
+    srun -o $LOGS/gmp-6.1.2.out $LOGS/gmp-6.1.2.sh
+    #$LOGS/gmp-6.1.2.sh
+fi
+
+#rm -rf $MODF/libs/headers $SOUR/linux-4.9.1.tar.xz $SOFT/headers
+# not required
+#if [ ! -f $MODF/libs/headers/4.9.1 ]; then
+#    echo 'headers-4.9.1'
+#    echo '#!/bin/bash
+#    module list
+#    cd $SOUR && wget -O l.tar.xz https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.9.1.tar.xz && \
+#    mv l.tar.xz linux-4.9.1.tar.xz && \
+#    tar xf linux-4.9.1.tar.xz && \
+#    cd $SOUR/linux-4.9.1 && \
+#	mkdir -p $SOFT/headers/4.9.1 && \
+#	make mrproper && \
+#	make INSTALL_HDR_PATH=$SOFT/headers/4.9.1/ headers_install && \
+#	#find $SOFT/headers/4.9.1/include \( -name .install -o -name ..install.cmd \) -delete
+#    newmod.sh \
+#    -s headers \
+#    -p $MODF/libs/ \
+#    -v 4.9.1 \
+#    -d 4.9.1
+#    ' > $LOGS/headers-4.9.1.sh
+#    chmod 755 $LOGS/headers-4.9.1.sh
+#    #srun -o $LOGS/headers-4.9.1.out $LOGS/headers-4.9.1.sh
+#    $LOGS/headers-4.9.1.sh
+#fi
+
+#rm -rf $MODF/libs/glibc $SOFT/glibc $SOUR/glibc* 
+# conlfict when loaded
+#if [ ! -f $MODF/libs/glibc/2.24.0 ]; then
+#    echo 'glibc-2.24.0'
+#    echo '#!/bin/bash
+#    module list
+#    cd $SOUR && wget -O l.tar.bz2 http://ftp.halifax.rwth-aachen.de/gnu/libc/glibc-2.24.tar.bz2 && \
+#    mv l.tar.bz2 glibc-2.24.tar.bz2 && \
+#    tar -jxvf glibc-2.24.tar.bz2 && \
+#    cd $SOUR/glibc-2.24 && \
+#	rm -rf build && mkdir build && cd build && \
+#    ../configure --prefix=$SOFT/glibc/2.24.0 --with-headers=$SOFT/headers/4.9.1/include/ && make && make install
+#    newmod.sh \
+#    -s glibc \
+#    -p $MODF/libs/ \
+#    -v 2.24.0 \
+#    -d 2.24.0
+#    ' > $LOGS/glibc-2.24.0.sh
+#    chmod 755 $LOGS/glibc-2.24.0.sh
+#    #srun -o $LOGS/glibc-2.24.0.out $LOGS/glibc-2.24.0.sh
+#    $LOGS/glibc-2.24.0.sh
+#fi
+
+# not functional
+#rm -rf $SOUR/ghc-8.0.2 $SOUR/ghc-8.0.2-* $SOUR/ghc-7.0.3 $SOFT/ghc/7.0.3 $SOFT/ghc/8.0.2 $SOUR/l.rpm $SOUR/ghc-7.0.3-13.1.x86_64.rpm $MODF/general/ghc
+#if [ ! -f $MODF/general/ghc/7.0.3 ]; then
+#    echo 'ghc-7.0.3'
+#    echo '#!/bin/bash
+#	rm -rf $SOUR/ghc-8.0.2 $SOUR/ghc-8.0.2-* $SOUR/ghc-7.0.3 $SOFT/ghc/7.0.3 $SOFT/ghc/8.0.2 $SOUR/l.rpm $SOUR/ghc-7.0.3-13.1.x86_64.rpm
+#	#module load headers
+#	#module load glibc/2.24.0
+#	#module load gmp/6.1.2
+#	#export LD_LIBRARY_PATH=$SOFT/gmp/6.1.2/lib:/:$LD_LIBRARY_PATH
+#    module list
+#    #cd $SOUR && wget -O l.tar.xz http://downloads.haskell.org/~ghc/8.0.2/ghc-8.0.2-x86_64-deb8-linux.tar.xz && \
+#    #mv l.tar.xz ghc-8.0.2-x86_64-deb8-linux.tar.xz && \
+#    #tar xf ghc-8.0.2-x86_64-deb8-linux.tar.xz && \
+#    #cd $SOUR/ghc-8.0.2 && \
+#	#mkdir -p $SOFT/ghc/8.02
+#	#cp -r * $SOFT/ghc/8.02/
+#	#./configure --prefix=$SOFT/ghc/8.0.2 && make clean && make && make install && \
+#    #wget -O l.tar.xz http://downloads.haskell.org/~ghc/8.0.2/ghc-8.0.2-src.tar.xz && \
+#	#mv l.tar.xz ghc-8.0.2-src.tar.xz && \
+#	#tar xvf ghc-8.0.2-src.tar.xz && \
+#	#cd ghc-8.0.2 && \
+#	#./configure --prefix=$SOFT/ghc/8.0.2 && make clean && make && make install
+#	#wget -O l.rpm http://www.rpmseek.com/download/http://download.opensuse.org/repositories/home:/mvancura:/haskel/SLE_11_SP1/x86_64/ghc-7.0.3-13.1.x86_64.rpm?hl=com&nid=5316:589 && \
+#	wget -O l.rpm http://ftp.gwdg.de/pub/opensuse/repositories/home:/mvancura:/haskel/SLE_11_SP1/x86_64/ghc-7.0.3-13.1.x86_64.rpm
+#	mv l.rpm ghc-7.0.3-13.1.x86_64.rpm && \
+#	rm -rf ghc-7.0.3 && mkdir -p ghc-7.0.3 && \
+#	mv ghc-7.0.3-13.1.x86_64.rpm ghc-7.0.3/ && \
+#	cd ghc-7.0.3/ && \
+#	rpm2cpio ghc-7.0.3-13.1.x86_64.rpm | cpio -idmv && \
+#	cd usr && \
+#	mkdir -p $SOFT/ghc/7.0.3 && \
+#	cp -r * $SOFT/ghc/7.0.3
+#	newmod.sh \
+#    -s ghc \
+#    -p $MODF/general/ \
+#    -v 7.0.3 \
+#    -d 7.0.3
+#    ' > $LOGS/ghc-7.0.3.sh
+#    chmod 755 $LOGS/ghc-7.0.3.sh
+#    #srun -o $LOGS/ghc-7.0.3.out $LOGS/ghc-7.0.3.sh
+#	$LOGS/ghc-7.0.3.sh 
+#fi
+
+rm -rf $MODF/bioinformatics/qiime/1.9.1
+
+if [ ! -f $MODF/bioinformatics/qiime/1.9.1 ]; then
+	echo 'qiime-1.9.1'
+	export GSL_h=/mpcdf/soft/SLES114/HSW/gsl/2.1/gcc-5.4
+	echo '#!/bin/bash
+	rm -rf $SOUR/qiime-1.9.1 $SOUR/qiime-1.9.1.tar.gz $SOUR/AmpliconNoiseV1.29 $SOUR/AmpliconNoiseV1.29.tar.gz $SOUR/qiime-deploy $SOUR/qiime-deploy-conf $SOFT/qiime/1.9.1
+	module list
 	
+	printf "\n\nPrepare environment\n\n"
+	
+	### Prepare environment ###
+	module load python/2.7.12
+	module load jdk
+	module load rlang/3.3.2
+	mkdir -p $SOFT/qiime/1.9.1/rlang/3.3.2/lib64/R/library
+	mkdir -p $SOFT/qiime/1.9.1/bin $SOFT/qiime/1.9.1/pythonpath/site-packages
+	export pythonuser=$SOFT/qiime/1.9.1/bin
+	export PATH=$PATH:$SOFT/qiime/1.9.1/bin
+	export PYTHONUSERBASE=$SOFT/qiime/1.9.1
+	export R_LIBS_USER=$SOFT/qiime/1.9.1/rlang/3.3.2/lib64/R/library
+	
+	printf "\n\nInstall qiime base\n\n"
+	### Install qiime base ###
+	cd $SOUR && \
+	wget -O d.tar.gz https://github.com/biocore/qiime/archive/1.9.1.tar.gz && \
+	mv d.tar.gz qiime-1.9.1.tar.gz && \
+	tar -zxvf qiime-1.9.1.tar.gz && \
+	cd qiime-1.9.1 && \
+	pip install numpy -I --user && \
+	pip install h5py -I --user && \
+	pip install ../qiime-1.9.1 -I --user
+	
+	printf "\n\nPrepare qiime full deployment\n\n"
+	### Prepare qiime full deployment ###
+	cd $SOUR/ && \
+	git clone https://github.com/qiime/qiime-deploy.git && \
+	git clone https://github.com/qiime/qiime-deploy-conf.git
+	
+    printf "\n\nInstall ant\n\n"
+	### Install ant ###
+	cd $SOFT/qiime/1.9.1 && wget http://mirror.serversupportforum.de/apache//ant/binaries/apache-ant-1.10.0-bin.tar.bz2 && \
+    tar -jxvf apache-ant-1.10.0-bin.tar.bz2
+    export PATH=$PATH:$SOFT/qiime/1.9.1/apache-ant-1.10.0/bin
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$SOFT/qiime/1.9.1/apache-ant-1.10.0/lib
+	
+	printf "\n\nqiime full deployment\n\n"
+	### qiime full deployment ###
+	sed -i "s/append-environment-to-bashrc: yes/append-environment-to-bashrc: no/g" $SOUR/qiime-deploy-conf/qiime-1.9.1/qiime.conf
+	cd $SOUR/qiime-deploy && python qiime-deploy.py $SOFT/qiime/1.9.1/ -f $SOUR/qiime-deploy-conf/qiime-1.9.1/qiime.conf --force-remove-failed-dirs
+	
+	printf "\n\nInstall usearch5.2.236 aka usearch\n\n"
+	### Install usearch5.2.236 aka usearch ###
+	wget https://github.com/edamame-course/2015-tutorials/raw/master/QIIME_files/usearch5.2.236_i86linux32	
+	cp usearch5.2.236_i86linux32 $SOFT/qiime/1.9.1/bin/usearch
+	chmod 755 $SOFT/qiime/1.9.1/bin/usearch
+	
+	### FlowgramAlignment - requires ghc, NOT WORKING and only required for 454 data ###
+	#mkdir $SOFT/qiime/1.9.1/FlowgramAlignment
+	#cd $SOUR/qiime-1.9.1/qiime/support_files/denoiser/FlowgramAlignment/ && \
+	#module load ghc && make install PREFIX=$SOFT/qiime/1.9.1/FlowgramAlignment
+	
+	printf "\n\nInstall cd-hit\n\n"
+	### Install cd-hit ###
+	cd $SOFT/qiime/1.9.1 &&	wget -O h.tar.gz https://github.com/weizhongli/cdhit/releases/download/V4.6.6/cd-hit-v4.6.6-2016-0711.tar.gz && \
+	mv h.tar.gz cd-hit-v4.6.6-2016-0711.tar.gz && tar -zxvf cd-hit-v4.6.6-2016-0711.tar.gz && \
+	cd cd-hit-v4.6.6-2016-0711 && make
+	
+	printf "\n\nInstall swarm, see follow up at the end of this file == issues with gcc/6.2\n\n"
+	### Install swarm, see follow up at the end of this file == issues with gcc/6.2 ###
+	cd $SOFT/qiime/1.9.1/ &&  wget -O d.tar.gz https://github.com/torognes/swarm/archive/1.2.19.tar.gz && mv d.tar.gz swarm-1.2.19.tar.gz && \
+	tar -zxvf swarm-1.2.19.tar.gz
+	
+	printf "\n\nInstall uclust\n\n"
+	### Install uclust ###
+	cd $SOFT/qiime/1.9.1/bin && wget -O d http://www.drive5.com/uclust/uclustq1.2.21_i86linux64 && mv d uclustq1.2.21_i86linux64 && ln -s uclustq1.2.21_i86linux64 uclust && \
+	chmod 755 uclustq1.2.21_i86linux64 && chmod 755 uclust
+	
+	printf "\n\nrdp_classifier_2.2\n\n"
+	### rdp_classifier_2.2 ###
+	cd $SOFT/qiime/1.9.1/ && wget -O l.zip https://downloads.sourceforge.net/project/rdp-classifier/rdp-classifier/rdp_classifier_2.2.zip && \
+	mv l.zip rdp_classifier_2.2.zip && unzip rdp_classifier_2.2.zip
+	
+	printf "\n\nmicrobiomeutil-r20110519\n\n"
+	### microbiomeutil-r20110519 ###
+	cd $SOFT/qiime/1.9.1 &&  wget -O l.tgz https://downloads.sourceforge.net/project/microbiomeutil/microbiomeutil-r20110519.tgz && \
+	mv l.tgz microbiomeutil-r20110519.tgz && tar -zxvf microbiomeutil-r20110519.tgz
+	#cd microbiomeutil-r20110519 && make
+	
+	#printf "\n\nea-utils\n\n"
+	#### ea-utils ### 
+	#cd $SOFT/qiime/1.9.1 ; wget -O d.tar.gz https://github.com/ExpressionAnalysis/ea-utils/tarball/master
+	#mv d.tar.gz ExpressionAnalysis-ea-utils-27a4809.tar.gz ; tar -zxvf ExpressionAnalysis-ea-utils-27a4809.tar.gz
+	#cd ExpressionAnalysis-ea-utils-27a4809/clipper 
+	#sed -i "s/^all:/#all:/g" Makefile
+	#sed -i "s/-lgsl -lgslcblas/-L\/mpcdf\/soft\/SLES114\/HSW\/gsl\/2.1\/gcc-5.4\/lib -lgsl -lgslcblas/g" Makefile
+	#module load gsl
+	#CFLAGS="-L/mpcdf/soft/SLES114/HSW/gsl/2.1/gcc-5.4/lib -I/mpcdf/soft/SLES114/HSW/gsl/2.1/gcc-5.4/include -I/draco/u/jboucas/modules/software/qiime/1.9.1/ExpressionAnalysis-ea-utils-27a4809/clipper" make	
+	
+	printf "\n\nSeqPrep-1.2\n\n"
+	### SeqPrep-1.2 ###
+	cd $SOFT/qiime/1.9.1 && wget -O d.tar.gz https://github.com/jstjohn/SeqPrep/archive/v1.2.tar.gz && \
+	mv d.tar.gz SeqPrep-1.2.tar.gz  && tar -zxvf SeqPrep-1.2.tar.gz && cd SeqPrep-1.2 && make
+	
+	printf "\n\nMothur.1.25.0\n\n"
+	### Mothur.1.25.0 ###
+	cd $SOFT/qiime/1.9.1 && wget -O m.zip http://www.mothur.org/w/images/6/6d/Mothur.1.25.0.zip && \
+	mv m.zip Mothur.1.25.0.zip && unzip Mothur.1.25.0.zip && \
+	cd $SOFT/qiime/1.9.1/Mothur.source && \
+	sed -i "s/TARGET_ARCH += -arch x86_64/#TARGET_ARCH += -arch x86_64/g" makefile && \
+	sed -i "s/#CXXFLAGS += -mtune=native -march=native -m64/CXXFLAGS += -mtune=native -march=native -m64/g" makefile && \
+	module load boost && make
+	
+	printf "\n\nCreate module file\n\n"
+	### Create module file ###
+	newmod.sh \
+    -s qiime \
+    -p $MODF/bioinformatics/ \
+    -v 1.9.1 \
+    -d 1.9.1 &&	\
+	echo "prepend-path PATH $SOFT/qiime/1.9.1/SeqPrep-1.2:$SOFT/qiime/1.9.1/swarm-1.2.19:$SOFT/qiime/1.9.1/ExpressionAnalysis-ea-utils-27a4809/clipper:$SOFT/qiime/1.9.1/microbiomeutil-r20110519/ChimeraSlayer:$SOFT/qiime/1.9.1/Mothur.source:/draco/u/jboucas/modules/software/qiime/1.9.1/swarm-1.2.19/scripts" >> $MODF/bioinformatics/qiime/1.9.1
+	echo "setenv RDP_JAR_PATH $SOFT/qiime/1.9.1/rdp_classifier_2.2/rdp_classifier-2.2.jar" >> $MODF/bioinformatics/qiime/1.9.1
+	echo "prepend-path PATH $SOFT/qiime/1.9.1/cd-hit-v4.6.6-2016-0711" >> $MODF/bioinformatics/qiime/1.9.1
+	echo "prepend-path PATH $SOFT/qiime/1.9.1/AmpliconNoiseV1.29/Scripts"  >> $MODF/bioinformatics/qiime/1.9.1
+	echo "prepend-path PATH $SOFT/qiime/1.9.1/AmpliconNoiseV1.29/bin" >> $MODF/bioinformatics/qiime/1.9.1
+	echo "setenv PYRO_LOOKUP_FILE $SOFT/qiime/1.9.1/AmpliconNoiseV1.29/Data/LookUp_E123.dat" >> $MODF/bioinformatics/qiime/1.9.1
+	echo "setenv SEQ_LOOKUP_FILE $SOFT/qiime/1.9.1/AmpliconNoiseV1.29/Data/Tran.dat" >> $MODF/bioinformatics/qiime/1.9.1
+	echo "module load jdk" >> $MODF/bioinformatics/qiime/1.9.1
+	echo "module load gsl" >> $MODF/bioinformatics/qiime/1.9.1
+	echo "prepend-path LD_LIBRARY_PATH $GSL_h/lib" >> $MODF/bioinformatics/qiime/1.9.1
+	echo "prepend-path LD_LIBRARY_PATH $SOFT/qiime/1.9.1/apache-ant-1.10.0/lib" >> $MODF/bioinformatics/qiime/1.9.1
+	echo "prepend-path PATH $SOFT/qiime/1.9.1/apache-ant-1.10.0/bin" >> $MODF/bioinformatics/qiime/1.9.1
+	echo "prepend-path CPATH $GSL_h/include" >> $MODF/bioinformatics/qiime/1.9.1
+	echo "prepend-path C_INCLUDE_PATH $GSL_h/include" >> $MODF/bioinformatics/qiime/1.9.1
+	#echo "exec $SOFT/qiime/1.9.1/activate.sh" >> $MODF/bioinformatics/qiime/1.9.1
+	echo "module load python/2.7.12" >> $MODF/bioinformatics/qiime/1.9.1
+	echo "module load rlang/3.3.2" >> $MODF/bioinformatics/qiime/1.9.1
+	echo "module load bwa" >> $MODF/bioinformatics/qiime/1.9.1
+    echo "setenv pythonuser $SOFT/qiime/1.9.1/bin" >> $MODF/bioinformatics/qiime/1.9.1
+	echo "setenv PYTHONUSERBASE $SOFT/qiime/1.9.1" >> $MODF/bioinformatics/qiime/1.9.1
+    echo "setenv R_LIBS_USER $SOFT/qiime/1.9.1/rlang/3.3.2/lib64/R/library" >> $MODF/bioinformatics/qiime/1.9.1
+	#echo "prepend-path LD_LIBRARY_PATH /mpcdf/soft/SLES114/common/intel/ps2016.3/16.0/linux/mkl/lib/intel64" >> $MODF/bioinformatics/qiime/1.9.1
+	echo "prepend-path PYTHONPATH $SOFT/qiime/1.9.1/lib/python2.7/site-packages/:$SOFT/qiime/1.9.1:$SOFT/qiime/1.9.1/pprospector-1.0.1-release/lib/python2.7/site-packages:$SOFT/qiime/1.9.1/qiime-galaxy-0.0.1-repository-de3646d3/lib/:$SOFT/qiime/1.9.1/tax2tree-1.0-release/lib/python2.7/site-packages" >> $MODF/bioinformatics/qiime/1.9.1
+	echo "prepend-path PATH $SOFT/qiime/1.9.1/chimeraslayer-4.29.2010-release/ChimeraSlayer:$SOFT/qiime/1.9.1/chimeraslayer-4.29.2010-release/NAST-iEr:$SOFT/qiime/1.9.1/rdpclassifier-2.2-release/.:$SOFT/qiime/1.9.1/blast-2.2.22-release/bin:$SOFT/qiime/1.9.1/muscle-3.8.31-release/.:$SOFT/qiime/1.9.1/infernal-1.0.2-release/bin:$SOFT/qiime/1.9.1/cytoscape-2.7.0-release/.:$SOFT/qiime/1.9.1/pprospector-1.0.1-release/bin:$SOFT/qiime/1.9.1/qiime-galaxy-0.0.1-repository-de3646d3/scripts:$SOFT/qiime/1.9.1/raxml-7.3.0-release/.:$SOFT/qiime/1.9.1/drisee-1.2-release/.:$SOFT/qiime/1.9.1/cdbtools-10.11.2010-release/.:$SOFT/qiime/1.9.1/sourcetracker-1.0.0-release/.:$SOFT/qiime/1.9.1/rtax-0.984-release/.:$SOFT/qiime/1.9.1/clearcut-1.0.9-release/.:$SOFT/qiime/1.9.1/blat-34-release/.:$SOFT/qiime/1.9.1/tax2tree-1.0-release/bin" >> $MODF/bioinformatics/qiime/1.9.1 
+	echo "setenv BLASTMAT $SOFT/qiime/1.9.1/blast-2.2.22-release/data" >> $MODF/bioinformatics/qiime/1.9.1
+	echo "setenv RDP_JAR_PATH $SOFT/qiime/1.9.1/rdpclassifier-2.2-release/rdp_classifier-2.2.jar" >> $MODF/bioinformatics/qiime/1.9.1
+	echo "setenv QIIME_CONFIG_FP $SOFT/qiime/1.9.1/qiime_config" >> $MODF/bioinformatics/qiime/1.9.1
+	echo "setenv SOURCETRACKER_PATH $SOFT/qiime/1.9.1/sourcetracker-1.0.0-release/." >> $MODF/bioinformatics/qiime/1.9.1	
+	echo "prepend-path PATH $SOFT/qiime/1.9.1/AmpliconNoiseV1.29/bin:$SOFT/qiime/1.9.1/AmpliconNoiseV1.29/Data:$SOFT/qiime/1.9.1/AmpliconNoiseV1.29/FastaUnique:$SOFT/qiime/1.9.1/AmpliconNoiseV1.29/FCluster:$SOFT/qiime/1.9.1/AmpliconNoiseV1.29/NDist:$SOFT/qiime/1.9.1/AmpliconNoiseV1.29/Perseus:$SOFT/qiime/1.9.1/AmpliconNoiseV1.29/PerseusD:$SOFT/qiime/1.9.1/AmpliconNoiseV1.29/PyroDist:$SOFT/qiime/1.9.1/AmpliconNoiseV1.29/PyroNoise:$SOFT/qiime/1.9.1/AmpliconNoiseV1.29/PyroNoiseA:$SOFT/qiime/1.9.1/AmpliconNoiseV1.29/PyroNoiseM:$SOFT/qiime/1.9.1/AmpliconNoiseV1.29/Scripts:$SOFT/qiime/1.9.1/AmpliconNoiseV1.29/SeqDist:$SOFT/qiime/1.9.1/AmpliconNoiseV1.29/SeqNoise:$SOFT/qiime/1.9.1/AmpliconNoiseV1.29/SplitClusterClust:$SOFT/qiime/1.9.1/AmpliconNoiseV1.29/SplitClusterEven:$SOFT/qiime/1.9.1/AmpliconNoiseV1.29/Test:$SOFT/qiime/1.9.1/AmpliconNoiseV1.29/TestFLX:$SOFT/qiime/1.9.1/AmpliconNoiseV1.29/TestTitanium:$SOFT/qiime/1.9.1/AmpliconNoiseV1.29/TestTitaniumFast" >> $MODF/bioinformatics/qiime/1.9.1 
+	
+	printf "\n\nmake swarm\n\n"
+	module purge
+	module load intel/16.0 mkl/11.3 impi/5.1.3 git/2.8 ncurses/6.0 libevent/2.0.22 tmux/2.3
+	cd $SOFT/qiime/1.9.1/swarm-1.2.19 
+	make
+
+	printf "\n\nAmpliconNoiseV1.29\n\n"
+	### AmpliconNoiseV1.29 ###
+    cd $SOUR && wget -O d.tar.gz https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/ampliconnoise/AmpliconNoiseV1.29.tar.gz  
+    mv $SOUR/d.tar.gz $SOUR/AmpliconNoiseV1.29.tar.gz && cd $SOUR && tar -zxvf AmpliconNoiseV1.29.tar.gz 
+    mv $SOUR/AmpliconNoiseV1.29 $SOFT/qiime/1.9.1/
+    cd $SOFT/qiime/1.9.1/AmpliconNoiseV1.29/ && \
+    cd Perseus && sed -i "s/LIBS   = -lm -lgsl -lgslcblas/LIBS   = -L\/mpcdf\/soft\/SLES114\/HSW\/gsl\/2.1\/gcc-5.4\/lib -lm -lgsl -lgslcblas/g" makefile && \
+    cd ../PerseusD && sed -i "s/LIBS   = -lm -lgsl -lgslcblas/LIBS   = -L\/mpcdf\/soft\/SLES114\/HSW\/gsl\/2.1\/gcc-5.4\/lib -lm -lgsl -lgslcblas/g" makefile && \
+    cd $SOFT/qiime/1.9.1/AmpliconNoiseV1.29/
+    module load gsl
+    export LD_LIBRARY_PATH=$GSL_HOME/lib:$LD_LIBRARY_PATH
+    export CPATH=$GSL_HOME/include:$CPATH
+    export C_INCLUDE_PATH=$GSL_HOME/include/:$C_INCLUDE_PATH
+	make
+
+    printf "\n\nea-utils\n\n"
+    ### ea-utils ### 
+    cd $SOFT/qiime/1.9.1 ; wget -O d.tar.gz https://github.com/ExpressionAnalysis/ea-utils/tarball/master
+    mv d.tar.gz ExpressionAnalysis-ea-utils-27a4809.tar.gz ; tar -zxvf ExpressionAnalysis-ea-utils-27a4809.tar.gz
+    cd ExpressionAnalysis-ea-utils-27a4809/clipper 
+    sed -i "s/^all:/#all:/g" Makefile
+    sed -i "s/-lgsl -lgslcblas/-L\/mpcdf\/soft\/SLES114\/HSW\/gsl\/2.1\/gcc-5.4\/lib -lgsl -lgslcblas/g" Makefile
+    module load gsl
+	module load qiime
+    CFLAGS="-L/mpcdf/soft/SLES114/HSW/gsl/2.1/gcc-5.4/lib -I/mpcdf/soft/SLES114/HSW/gsl/2.1/gcc-5.4/include -I/draco/u/jboucas/modules/software/qiime/1.9.1/ExpressionAnalysis-ea-utils-27a4809/clipper" make   
+
+	#cd $SOFT/qiime/1.9.1/SeqPrep-1.2
+	#make
+	' > $LOGS/qiime-1.9.1.sh
+    chmod 755 $LOGS/qiime-1.9.1.sh
+    srun -o $LOGS/qiime-1.9.1.out $LOGS/qiime-1.9.1.sh
+	#$LOGS/qiime-1.9.1.sh > $LOGS/qiime-1.9.1.out
+
+	module load qiime
+
+	mkdir -p $SOFT/qiime/1.9.1/rlang/3.3.2/lib64/R/library
+	echo "install.packages(c('ape', 'biom', 'optparse', 'RColorBrewer', 'randomForest', 'vegan'), c('$SOFT/qiime/1.9.1/rlang/3.3.2/lib64/R/library')  ,repos='http://ftp5.gwdg.de/pub/misc/cran/', dependencies=TRUE )" > $SOFT/qiime/1.9.1/install.R.packages
+	echo "source('http://bioconductor.org/biocLite.R')" >> $SOFT/qiime/1.9.1/install.R.packages
+	echo "biocLite(c('DESeq2', 'metagenomeSeq','biomformat'),lib='$SOFT/qiime/1.9.1/rlang/3.3.2/lib64/R/library' )" >> $SOFT/qiime/1.9.1/install.R.packages
+	chmod 755 $SOFT/qiime/1.9.1/install.R.packages
+	srun -o $LOGS/qiime-1.9.1.Rpackages.out Rscript $SOFT/qiime/1.9.1/install.R.packages
+	
+	cd $SOFT/qiime/1.9.1/lib/python2.7/site-packages/qiime
+	for i in $(ls *.py); do cat ${i} | egrep '#!/usr/|__future__' > _${i} ; echo "import matplotlib" >> _${i} ; echo "matplotlib.use('agg')" >> _${i} ; cat ${i} | egrep -v '#!/usr/|__future__' >> _${i} ; mv _${i} ${i}; done
+
+	cd $SOUR/qiime-1.9.1/tests
+    for i in $(ls *.py); do cat ${i} | egrep '#!/usr/|__future__' > _${i} ; echo "import matplotlib" >> _${i} ; echo "matplotlib.use('agg')" >> _${i} ; cat ${i} | egrep -v '#!/usr/|__future__' >> _${i} ;
+mv _${i} ${i}; done
+
+	srun -o $LOGS/qiime-1.9.1.full.tests.out python $SOUR/qiime-1.9.1/tests/all_tests.py
+fi
+
 
 exit
 
