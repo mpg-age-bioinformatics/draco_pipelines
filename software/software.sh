@@ -1065,6 +1065,12 @@ if [ ! -f $MODF/bioinformatics/qiime/1.9.1 ]; then
 	sed -i "s/TARGET_ARCH += -arch x86_64/#TARGET_ARCH += -arch x86_64/g" makefile && \
 	sed -i "s/#CXXFLAGS += -mtune=native -march=native -m64/CXXFLAGS += -mtune=native -march=native -m64/g" makefile && \
 	module load boost && make
+
+	printf "\n\nvsearch-2.3.4 alternative to usearch61\n\n"
+	### vsearch-2.3.4 alternative to usearch61 ### 
+	cd $SOFT/qiime/1.9.1 && wget -O d.tar.gz https://github.com/torognes/vsearch/releases/download/v2.3.4/vsearch-2.3.4-linux-x86_64.tar.gz && \
+	mv d.tar.gz vsearch-2.3.4-linux-x86_64.tar.gz && tar -zxvf vsearch-2.3.4-linux-x86_64.tar.gz && \
+	cd vsearch-2.3.4-linux-x86_64/bin && cp vsearch usearch61
 	
 	printf "\n\nCreate module file\n\n"
 	### Create module file ###
@@ -1073,7 +1079,7 @@ if [ ! -f $MODF/bioinformatics/qiime/1.9.1 ]; then
     -p $MODF/bioinformatics/ \
     -v 1.9.1 \
     -d 1.9.1 &&	\
-	echo "prepend-path PATH $SOFT/qiime/1.9.1/SeqPrep-1.2:$SOFT/qiime/1.9.1/swarm-1.2.19:$SOFT/qiime/1.9.1/ExpressionAnalysis-ea-utils-27a4809/clipper:$SOFT/qiime/1.9.1/microbiomeutil-r20110519/ChimeraSlayer:$SOFT/qiime/1.9.1/Mothur.source:/draco/u/jboucas/modules/software/qiime/1.9.1/swarm-1.2.19/scripts" >> $MODF/bioinformatics/qiime/1.9.1
+	echo "prepend-path PATH $SOFT/qiime/1.9.1/vsearch-2.3.4-linux-x86_64/bin:$SOFT/qiime/1.9.1/SeqPrep-1.2:$SOFT/qiime/1.9.1/swarm-1.2.19:$SOFT/qiime/1.9.1/ExpressionAnalysis-ea-utils-27a4809/clipper:$SOFT/qiime/1.9.1/microbiomeutil-r20110519/ChimeraSlayer:$SOFT/qiime/1.9.1/Mothur.source:/draco/u/jboucas/modules/software/qiime/1.9.1/swarm-1.2.19/scripts" >> $MODF/bioinformatics/qiime/1.9.1
 	echo "setenv RDP_JAR_PATH $SOFT/qiime/1.9.1/rdp_classifier_2.2/rdp_classifier-2.2.jar" >> $MODF/bioinformatics/qiime/1.9.1
 	echo "prepend-path PATH $SOFT/qiime/1.9.1/cd-hit-v4.6.6-2016-0711" >> $MODF/bioinformatics/qiime/1.9.1
 	echo "prepend-path PATH $SOFT/qiime/1.9.1/AmpliconNoiseV1.29/Scripts"  >> $MODF/bioinformatics/qiime/1.9.1
@@ -1134,9 +1140,6 @@ if [ ! -f $MODF/bioinformatics/qiime/1.9.1 ]; then
     module load gsl
 	module load qiime
     CFLAGS="-L/mpcdf/soft/SLES114/HSW/gsl/2.1/gcc-5.4/lib -I/mpcdf/soft/SLES114/HSW/gsl/2.1/gcc-5.4/include -I/draco/u/jboucas/modules/software/qiime/1.9.1/ExpressionAnalysis-ea-utils-27a4809/clipper" make   
-
-	#cd $SOFT/qiime/1.9.1/SeqPrep-1.2
-	#make
 	' > $LOGS/qiime-1.9.1.sh
     chmod 755 $LOGS/qiime-1.9.1.sh
     srun -o $LOGS/qiime-1.9.1.out $LOGS/qiime-1.9.1.sh
@@ -1158,9 +1161,12 @@ if [ ! -f $MODF/bioinformatics/qiime/1.9.1 ]; then
     for i in $(ls *.py); do cat ${i} | egrep '#!/usr/|__future__' > _${i} ; echo "import matplotlib" >> _${i} ; echo "matplotlib.use('agg')" >> _${i} ; cat ${i} | egrep -v '#!/usr/|__future__' >> _${i} ;
 mv _${i} ${i}; done
 
+	cd $SOFT/qiime/1.9.1/bin
+	for i in $(ls *.py); do cat ${i} | egrep '#!/usr/|__future__' > _${i} ; echo "import matplotlib" >> _${i} ; echo "matplotlib.use('agg')" >> _${i} ; cat ${i} | egrep -v '#!/usr/|__future__' >> _${i} ;
+mv _${i} ${i}; done
+
 	srun -o $LOGS/qiime-1.9.1.full.tests.out python $SOUR/qiime-1.9.1/tests/all_tests.py
 fi
-
 
 exit
 
