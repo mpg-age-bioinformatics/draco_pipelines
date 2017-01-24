@@ -1140,6 +1140,7 @@ if [ ! -f $MODF/bioinformatics/qiime/1.9.1 ]; then
     module load gsl
 	module load qiime
     CFLAGS="-L/mpcdf/soft/SLES114/HSW/gsl/2.1/gcc-5.4/lib -I/mpcdf/soft/SLES114/HSW/gsl/2.1/gcc-5.4/include -I/draco/u/jboucas/modules/software/qiime/1.9.1/ExpressionAnalysis-ea-utils-27a4809/clipper" make   
+	chmod 755 $SOFT/qiime/1.9.1/bin/*.py
 	' > $LOGS/qiime-1.9.1.sh
     chmod 755 $LOGS/qiime-1.9.1.sh
     srun -o $LOGS/qiime-1.9.1.out $LOGS/qiime-1.9.1.sh
@@ -1155,15 +1156,15 @@ if [ ! -f $MODF/bioinformatics/qiime/1.9.1 ]; then
 	srun -o $LOGS/qiime-1.9.1.Rpackages.out Rscript $SOFT/qiime/1.9.1/install.R.packages
 	
 	cd $SOFT/qiime/1.9.1/lib/python2.7/site-packages/qiime
-	for i in $(ls *.py); do cat ${i} | egrep '#!/usr/|__future__' > _${i} ; echo "import matplotlib" >> _${i} ; echo "matplotlib.use('agg')" >> _${i} ; cat ${i} | egrep -v '#!/usr/|__future__' >> _${i} ; mv _${i} ${i}; done
+	for i in $(ls *.py); do sed -i "s/\/u\/jboucas\/modules\/software\/python\/2.7.12\/bin\/python/\/usr\/bin\/env python/g" ${i} ;  cat ${i} | egrep '#!/usr/|__future__' > _${i} ; echo "import matplotlib" >> _${i} ; echo "matplotlib.use('agg')" >> _${i} ; cat ${i} | egrep -v '#!/usr/|__future__' >> _${i} ; mv _${i} ${i}; chmod 755 ${i} ; done
 
 	cd $SOUR/qiime-1.9.1/tests
-    for i in $(ls *.py); do cat ${i} | egrep '#!/usr/|__future__' > _${i} ; echo "import matplotlib" >> _${i} ; echo "matplotlib.use('agg')" >> _${i} ; cat ${i} | egrep -v '#!/usr/|__future__' >> _${i} ;
-mv _${i} ${i}; done
+    for i in $(ls *.py); do sed -i "s/\/u\/jboucas\/modules\/software\/python\/2.7.12\/bin\/python/\/usr\/bin\/env python/g" ${i} ; cat ${i} | egrep '#!/usr/|__future__' > _${i} ; echo "import matplotlib" >> _${i} ; echo "matplotlib.use('agg')" >> _${i} ; cat ${i} | egrep -v '#!/usr/|__future__' >> _${i} ;
+mv _${i} ${i}; chmod 755 ${i}; done
 
 	cd $SOFT/qiime/1.9.1/bin
-	for i in $(ls *.py); do cat ${i} | egrep '#!/usr/|__future__' > _${i} ; echo "import matplotlib" >> _${i} ; echo "matplotlib.use('agg')" >> _${i} ; cat ${i} | egrep -v '#!/usr/|__future__' >> _${i} ;
-mv _${i} ${i}; done
+	for i in $(ls *.py); do sed -i "s/\/u\/jboucas\/modules\/software\/python\/2.7.12\/bin\/python/\/usr\/bin\/env python/g" ${i} ; cat ${i} | egrep '#!/usr/|__future__' > _${i} ; echo "import matplotlib" >> _${i} ; echo "matplotlib.use('agg')" >> _${i} ; cat ${i} | egrep -v '#!/usr/|__future__' >> _${i} ;
+mv _${i} ${i}; chmod 755 ${i} ; done
 
 	srun -o $LOGS/qiime-1.9.1.full.tests.out python $SOUR/qiime-1.9.1/tests/all_tests.py
 fi
