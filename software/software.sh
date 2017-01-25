@@ -827,7 +827,7 @@ if [ ! -f $MODF/general/ruby/2.4.0 ]; then
 	module load ruby-install
 	module list
 	cd $SOUR && \
-	ruby-install --rubies-dir $SOFT ruby 2.4.0 && \
+	ruby-install --install-dir $SOFT/ruby/2.4.0 && \
 	newmod.ruby.sh \
     -s ruby \
     -p $MODF/general/ \
