@@ -159,7 +159,7 @@ if [ ! -f $MODF/libs/bzip2/1.0.6 ]; then
     cd bzip2-1.0.6 && \
     mkdir -p $SOFT/bzip2/1.0.6 && \
     sed -i "18s/.*/CC\=gcc -fPIC/" Makefile  && \
-    COMPILE_FLAGS+=-fPIC make Makefile-libbz2_so && COMPILE_FLAGS+=-fPIC make clean && COMPILE_FLAGS+=-fPIC make && \
+    COMPILE_FLAGS+=-fPIC make -f Makefile-libbz2_so && COMPILE_FLAGS+=-fPIC make clean && COMPILE_FLAGS+=-fPIC make && \
     COMPILE_FLAGS+=-fPIC make -n install PREFIX=$SOFT/bzip2/1.0.6 && \
     COMPILE_FLAGS+=-fPIC make install PREFIX=$SOFT/bzip2/1.0.6
 	cp -v bzip2-shared $SOFT/bzip2/1.0.6/bin/bzip2
@@ -368,7 +368,7 @@ if [ ! -f $MODF/general/python/2.7.12 ]; then
     tar xzf python-2.7.12.tgz && \
     cd Python-2.7.12 && \
     mkdir -p $SOFT/python/2.7.12/bin && \
-    ./configure --prefix=$SOFT/python/2.7.12 CLFAGS="-I$SOFT/openblas/0.2.19/include -I$SOFT/ncurses/6.0/include/ncurses" LDFLAGS=-L$SOFT/openblas/0.2.19/lib
+    ./configure --prefix=$SOFT/python/2.7.12 --enable-shared CLFAGS="-I$SOFT/openblas/0.2.19/include -I$SOFT/ncurses/6.0/include/ncurses" LDFLAGS="-L$SOFT/openblas/0.2.19/lib -L$SOFT/bzip2/1.0.6/lib" && \
 	make && make install && \
     newmod.sh \
     -s python \
@@ -391,10 +391,10 @@ if [ ! -f $MODF/general/python/2.7.12 ]; then
     echo "exec /bin/mkdir -p \$home/.Python/2.7.12/pythonpath/site-packages" >> $MODF/general/python/2.7.12
 	echo "module load gcc/6.2 bzip2/1.0.6 xz/5.2.2 ncurses/6.0 libevent/2.0.22 pcre/8.39 curl/7.51.0 freetype/2.7 openblas/0.2.19" >> $MODF/general/python/2.7.12
 	echo "setenv CFLAGS \"-I$SOFT/openblas/0.2.19/include -I$SOFT/ncurses/6.0/include/ncurses -I$SOFT/libevent/2.0.22/include -I$SOFT/bzip2/1.0.6/include -I$SOFT/xz/5.2.2/include -I$SOFT/pcre/8.39/include -I$SOFT/curl/7.51.0/include -I$SOFT/openblas/0.2.19/include -I$SOFT/rlang/3.3.2/lib64/R/include\"" >> $MODF/general/python/2.7.12
-	echo "setenv LDFLAGS \"-L$SOFT/openblas/0.2.19/lib -L$SOFT/ncurses/6.0/lib -L$SOFT/libevent/2.0.22/lib -L$SOFT/bzip2/1.0.6/lib -L$SOFT/xz/5.2.2/lib -L$SOFT/pcre/8.39/lib -L$SOFT/curl/7.51.0/lib -L/mpcdf/soft/SLES114/common/intel/ps2016.3/16.0/linux/mkl/lib/intel64 -L$SOFT/rlang/3.3.2/lib64/R/lib\"" >> $MODF/general/python/2.7.12
+	echo "setenv LDFLAGS \"-L$SOFT/openblas/0.2.19/lib -L$SOFT/ncurses/6.0/lib -L$SOFT/libevent/2.0.22/lib -L$SOFT/bzip2/1.0.6/lib -L$SOFT/xz/5.2.2/lib -L$SOFT/pcre/8.39/lib -L$SOFT/curl/7.51.0/lib -L/mpcdf/soft/SLES114/common/intel/ps2016.3/16.0/linux/mkl/lib/intel64 -L$SOFT/bzip2/1.0.6/lib -L$SOFT/rlang/3.3.2/lib64/R/lib\"" >> $MODF/general/python/2.7.12
 	' > $LOGS/python-2.7.12.sh
 	chmod 755 $LOGS/python-2.7.12.sh
-	srun -o $LOGS/python-2.7.12.out $LOGS/python-2.7.12.sh #-o $LOGS/python-2.7.12.out
+	srun -o $LOGS/python-2.7.12.out -c 1 --mem=4gb -p express $LOGS/python-2.7.12.sh #-o $LOGS/python-2.7.12.out
 fi
 
 if [ ! -f $MODF/general/pigz/2.3.4 ]; then
@@ -953,7 +953,6 @@ fi
 #	$LOGS/ghc-7.0.3.sh 
 #fi
 
-rm -rf $MODF/bioinformatics/qiime/1.9.1
 
 if [ ! -f $MODF/bioinformatics/qiime/1.9.1 ]; then
 	echo 'qiime-1.9.1'
@@ -994,7 +993,7 @@ if [ ! -f $MODF/bioinformatics/qiime/1.9.1 ]; then
 	
     printf "\n\nInstall ant\n\n"
 	### Install ant ###
-	cd $SOFT/qiime/1.9.1 && wget http://mirror.serversupportforum.de/apache//ant/binaries/apache-ant-1.10.0-bin.tar.bz2 && \
+	cd $SOFT/qiime/1.9.1 && wget https://www.apache.org/dist/ant/binaries/apache-ant-1.10.0-bin.tar.bz2 && \
     tar -jxvf apache-ant-1.10.0-bin.tar.bz2
     export PATH=$PATH:$SOFT/qiime/1.9.1/apache-ant-1.10.0/bin
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$SOFT/qiime/1.9.1/apache-ant-1.10.0/lib
@@ -1166,16 +1165,48 @@ mv _${i} ${i}; chmod 755 ${i}; done
 	for i in $(ls *.py); do sed -i "s/\/u\/jboucas\/modules\/software\/python\/2.7.12\/bin\/python/\/usr\/bin\/env python/g" ${i} ; cat ${i} | egrep '#!/usr/|__future__' > _${i} ; echo "import matplotlib" >> _${i} ; echo "matplotlib.use('agg')" >> _${i} ; cat ${i} | egrep -v '#!/usr/|__future__' >> _${i} ;
 mv _${i} ${i}; chmod 755 ${i} ; done
 
+    cd $SOFT/qiime/1.9.1/rtax-0.984-release
+    sed -i 's/tempdir=\/tmp/tempdir=\${TMPDIR}/g' rtax
+
 	srun -o $LOGS/qiime-1.9.1.full.tests.out python $SOUR/qiime-1.9.1/tests/all_tests.py
 fi
 
+
+if [ ! -f $MODF/bioinformatics/snpeff/4.3.i ]; then
+    echo 'snpeff-4.3.i'
+    echo '#!/bin/bash
+    module list
+    cd $SOUR && wget -O l.zip https://downloads.sourceforge.net/project/snpeff/snpEff_v4_3i_core.zip && \
+    mv l.zip snpEff_v4_3i_core.zip && \
+	rm -rf snpEff && \
+    unzip snpEff_v4_3i_core.zip && \
+    rm -rf snpEff_v4_3i_core && \
+	mv snpEff snpEff_v4_3i_core && \
+	mkdir -p $SOFT/snpeff/4.3.i/bin && \
+	cp -r snpEff_v4_3i_core/* $SOFT/snpeff/4.3.i/bin && \
+    newmod.sh \
+    -s snpeff \
+    -p $MODF/bioinformatics/ \
+    -v 4.3.i \
+    -d 4.3.i && \
+	echo "module load java" >> $MODF/bioinformatics/snpeff/4.3.i
+	echo "setenv SNPEFF $SOFT/snpeff/4.3.i/bin/snpEff.jar" >> $MODF/bioinformatics/snpeff/4.3.i
+	echo "setenv SNPSIFT $SOFT/snpeff/4.3.i/bin/SnpSift.jar" >> $MODF/bioinformatics/snpeff/4.3.i
+    ' > $LOGS/snpeff-4.3.i.sh
+    chmod 755 $LOGS/snpeff-4.3.i.sh
+    srun -o $LOGS/snpeff-4.3.i.out $LOGS/snpeff-4.3.i.sh
+fi
+
+
 exit
 
-module load python/2.7.12
-module load rlang/3.3.2
-python -m ensurepip
-pip install pip --upgrade
-pip install jupyter
+#exit
+
+#module load python/2.7.12
+#module load rlang/3.3.2
+#python -m ensurepip
+#pip install pip --upgrade
+#pip install jupyter
 
 
 cd $SOUR
