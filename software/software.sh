@@ -314,7 +314,9 @@ if [ ! -f $MODF/libs/openssl/1.1.0c ]; then
     -p $MODF/libs/ \
     -v 1.1.0c \
     -d 1.1.0c
-    ' > $LOGS/openssl-1.1.0c.sh
+	echo "prepend-path PATH $SOFT/openssl/1.1.0c/lib" >> $MODF/libs/openssl/1.1.0c
+    echo "prepend-path PKG_CONFIG_PATH $SOFT/openssl/1.1.0c/lib/pkgconfig" >> $MODF/libs/openssl/1.1.0c
+	' > $LOGS/openssl-1.1.0c.sh
     chmod 755 $LOGS/openssl-1.1.0c.sh
     srun -o $LOGS/openssl-1.1.0c.out $LOGS/openssl-1.1.0c.sh # -o $LOGS/freetype-2.7.out
 fi
@@ -347,6 +349,7 @@ if [ ! -f $MODF/general/rlang/3.3.2 ]; then
     echo "prepend-path CPLUS_INCLUDE_PATH $SOFT/rlang/3.3.2/lib64/R/include" >> $MODF/general/rlang/3.3.2
     echo "prepend-path OBJC_INCLUDE_PATH $SOFT/rlang/3.3.2/lib64/R/include" >> $MODF/general/rlang/3.3.2
     echo "module load gcc/6.2" >> $MODF/general/rlang/3.3.2
+	echo "module load openssl/1.1.0c" >> $MODF/general/rlang/3.3.2
 	mv $SOFT/rlang/3.3.2/lib64/R/lib/libRblas.so $SOFT/rlang/3.3.2/lib64/R/lib/old_libRblas.so
     ln -s $SOFT/openblas/0.2.19/lib/libopenblas.so $SOFT/rlang/3.3.2/lib64/R/lib/libRblas.so
 	' > $LOGS/rlang-3.3.2.sh
