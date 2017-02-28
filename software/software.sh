@@ -1200,6 +1200,51 @@ if [ ! -f $MODF/bioinformatics/snpeff/4.3.i ]; then
     srun -o $LOGS/snpeff-4.3.i.out $LOGS/snpeff-4.3.i.sh
 fi
 
+if [ ! -f $MODF/bioinformatics/spades/3.10.0 ]; then
+    echo 'spades-3.10.0'
+    echo '#!/bin/bash
+    module list
+    cd $SOUR && wget http://spades.bioinf.spbau.ru/release3.10.0/SPAdes-3.10.0-Linux.tar.gz && \
+    tar -zxvf SPAdes-3.10.0-Linux.tar.gz && \
+    cd SPAdes-3.10.0-Linux && \
+    mkdir -p $SOFT/spades/3.10.0 && \
+    cp -r * $SOFT/spades/3.10.0/ && \ 
+    newmod.sh \
+    -s spades \
+    -p $MODF/bioinformatics/ \
+    -v 3.10.0 \
+    -d 3.10.0
+    ' > $LOGS/spades-3.10.0.sh
+    chmod 755 $LOGS/spades-3.10.0.sh
+    srun -o $LOGS/spades-3.10.0.out $LOGS/spades-3.10.0.sh
+fi
+
+rm -rf $MODF/bioinformatics/rsem/1.3.0
+
+if [ ! -f $MODF/bioinformatics/rsem/1.3.0 ]; then
+	echo 'rsem-1.3.0'
+	echo '#!/bin/bash
+	rm -rf $SOFT/rsem $SOUR/RSEM-1.3.0
+	module load rlang/3.3.2
+	module list
+	cd $SOUR && wget -O l.tar.gz https://github.com/deweylab/RSEM/archive/v1.3.0.tar.gz && \ 
+	mv l.tar.gz rsem-v1.3.0.tar.gz && \
+	tar -zxvf rsem-v1.3.0.tar.gz && \
+	mkdir -p $SOFT/rsem/1.3.0 && \
+	mv RSEM-1.3.0 $SOFT/rsem/1.3.0/bin  && \
+	cd $SOFT/rsem/1.3.0/bin && \
+	make && make ebseq && \
+	newmod.sh \
+    -s rsem \
+    -p $MODF/bioinformatics/ \
+    -v 1.3.0 \
+    -d 1.3.0 && \
+    echo "module load rlang/3.3.2" >> $MODF/bioinformatics/rsem/1.3.0
+	echo "prepend-path R_LIBS_USER /u/jboucas/modules/software/rsem/1.3.0/bin/EBSeq" >> $MODF/bioinformatics/rsem/1.3.0
+	' > $LOGS/rsem-1.3.0.sh
+    chmod 755 $LOGS/rsem-1.3.0.sh
+    srun -o $LOGS/rsem-1.3.0.out $LOGS/rsem-1.3.0.sh
+fi
 
 exit
 
