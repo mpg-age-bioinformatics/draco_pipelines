@@ -1219,8 +1219,6 @@ if [ ! -f $MODF/bioinformatics/spades/3.10.0 ]; then
     srun -o $LOGS/spades-3.10.0.out $LOGS/spades-3.10.0.sh
 fi
 
-rm -rf $MODF/bioinformatics/rsem/1.3.0
-
 if [ ! -f $MODF/bioinformatics/rsem/1.3.0 ]; then
 	echo 'rsem-1.3.0'
 	echo '#!/bin/bash
@@ -1244,6 +1242,74 @@ if [ ! -f $MODF/bioinformatics/rsem/1.3.0 ]; then
 	' > $LOGS/rsem-1.3.0.sh
     chmod 755 $LOGS/rsem-1.3.0.sh
     srun -o $LOGS/rsem-1.3.0.out $LOGS/rsem-1.3.0.sh
+fi
+
+#rm -rf $MODF/bioinformatics/methpipe/3.4.2
+
+if [ ! -f $MODF/bioinformatics/methpipe/3.4.2 ]; then
+	echo 'methpipe-3.4.2'
+	module load gsl/2.1
+    export PATH=$GSL_HOME/bin:$PATH
+    export LD_LIBRARY_PATH=$GSL_HOME/lib:$LD_LIBRARY_PATH
+    export CPATH=$GSL_HOME/include:$CPATH
+	echo "#!/bin/bash
+	rm -rf $SOFT/methpipe $SOUR/methpipe-3.4.2 $SOUR/methpipe 
+	module load gsl/2.1
+	module list
+	cd $SOUR && git clone https://github.com/smithlabcode/methpipe.git && \
+	cd methpipe && git reset --hard e0aa0131d77ce3c5d1c973c54ad5fef80e1c642f && \ 
+	cd ../ && \
+	mkdir -p $SOFT/methpipe/3.4.2/lib $SOFT/methpipe/3.4.2/include $SOFT/methpipe/3.4.2/bin && \
+	mv methpipe methpipe-3.4.2 && \
+	cd methpipe-3.4.2 && \
+	git clone https://github.com/smithlabcode/smithlab_cpp.git && \
+	cd smithlab_cpp && make && \
+	cp *.* $SOFT/methpipe/3.4.2/lib && \
+	cp *.* $SOFT/methpipe/3.4.2/include && \
+	cp *.* $SOFT/methpipe/3.4.2/bin && \
+	export LD_LIBRARY_PATH=$SOFT/methpipe/3.4.2/lib:\$LD_LIBRARY_PATH && \
+	export CPATH=$SOFT/methpipe/3.4.2/include:\$CPATH && \
+	export PATH=$SOFT/methpipe/3.4.2/bin:\$PATH
+	cd $SOUR/methpipe-3.4.2  
+	mv smithlab_cpp src/
+	cd src/
+	for f in \$(ls -d */); do sed -i 's/-lgsl -lgslcblas/-L\/mpcdf\/soft\/SLES114\/HSW\/gsl\/2.1\/gcc-5.4\/lib -lgsl -lgslcblas/g' \${f}Makefile ; sed -i 's/INCLUDEDIRS =/INCLUDEDIRS = \/mpcdf\/soft\/SLES114\/HSW\/gsl\/2.1\/gcc-5.4\/include/g' \${f}Makefile; done
+    export LD_LIBRARY_PATH=/mpcdf/soft/SLES114/HSW/gsl/2.1/gcc-5.4/lib:\$LD_LIBRARY_PATH && \
+    export CPATH=/mpcdf/soft/SLES114/HSW/gsl/2.1/gcc-5.4/include:$CPATH
+	cd $SOUR/methpipe-3.4.2 && \
+	make all && make install && cp $SOUR/methpipe-3.4.2/bin/* $SOFT/methpipe/3.4.2/bin/ && \ 
+    newmod.sh \
+    -s methpipe \
+    -p $MODF/bioinformatics/ \
+    -v 3.4.2 \
+    -d 3.4.2 && \
+    echo 'module load gsl/2.1' >> $MODF/bioinformatics/methpipe/3.4.2
+	echo 'prepend-path PATH /mpcdf/soft/SLES114/HSW/gsl/2.1/gcc-5.4/bin' >> $MODF/bioinformatics/methpipe/3.4.2
+    echo 'prepend-path LD_LIBRARY_PATH /mpcdf/soft/SLES114/HSW/gsl/2.1/gcc-5.4/lib' >> $MODF/bioinformatics/methpipe/3.4.2
+    echo 'prepend-path CPATH /mpcdf/soft/SLES114/HSW/gsl/2.1/gcc-5.4/include' >> $MODF/bioinformatics/methpipe/3.4.2
+    " > $LOGS/methpipe-3.4.2.sh
+    chmod 755 $LOGS/methpipe-3.4.2.sh
+    srun -o $LOGS/methpipe-3.4.2.out $LOGS/methpipe-3.4.2.sh
+fi
+
+if [ ! -f $MODF/bioinformatics/walt/1.0.0 ]; then
+    echo 'walt-1.0.0'
+	echo "#!/bin/bash
+	rm -rf $SOFT/walt $SOUR/walt-1.0.0 $SOUR/walt
+	module list
+	mkdir -p $SOFT/walt/1.0.0
+	cd $SOUR && git clone https://github.com/smithlabcode/walt.git && \
+	cd walt && git reset --hard e091cb41ff462c2a6bcfafcc945e55db44f93438 && \
+	cd ../ && mv walt walt-1.0.0 && cd walt-1.0.0 \
+	make all && make install && cp -r bin $SOFT/walt/1.0.0 && \
+	newmod.sh \
+    -s walt \
+    -p $MODF/bioinformatics/ \
+    -v 1.0.0 \
+    -d 1.0.0
+	" > $LOGS/walt-1.0.0.sh
+	chmod 755 $LOGS/walt-1.0.0.sh
+	srun -o $LOGS/walt-1.0.0.out $LOGS/walt-1.0.0.sh
 fi
 
 exit
