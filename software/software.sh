@@ -1312,6 +1312,58 @@ if [ ! -f $MODF/bioinformatics/walt/1.0.0 ]; then
 	srun -o $LOGS/walt-1.0.0.out $LOGS/walt-1.0.0.sh
 fi
 
+#ftp://ftp.broadinstitute.org/pub/crd/ALLPATHS/Release-LG/latest_source_code/LATEST_VERSION.tar.gz
+
+if [ ! -f $MODF/bioinformatics/allpathslg/52488 ]; then
+	echo "allpathslg-52488"
+	echo "#!/bin/bash
+	rm -rf $SOFT/allpathslg/52488 $SOUR/allpathslg-52488 $SOUR/allpathslg
+	module unload gcc
+	module load gcc/4.9
+	module list
+	mkdir -p $SOFT/allpathslg/52488
+	cd $SOUR && wget -O d.tar.gz ftp://ftp.broadinstitute.org/pub/crd/ALLPATHS/Release-LG/latest_source_code/LATEST_VERSION.tar.gz && \
+	mv d.tar.gz allpathslg-52488.tar.gz && \
+	tar -zxvf allpathslg-52488.tar.gz && \
+	cd allpathslg-52488 && \
+	./configure --prefix=$SOFT/allpathslg/52488/ && \
+	make && make install && \
+    newmod.sh \
+    -s allpathslg \
+    -p $MODF/bioinformatics/ \
+    -v 52488 \
+    -d 52488
+	echo 'module load gcc/4.9' >> $MODF/bioinformatics/allpathslg/52488
+    echo 'module load picard/2.8.1' >> $MODF/bioinformatics/allpathslg/52488
+	echo 'module load graphviz/2.40.1' >> $MODF/bioinformatics/allpathslg/52488
+	" > $LOGS/allpathslg-52488.sh
+    chmod 755 $LOGS/allpathslg-52488.sh
+    srun -o $LOGS/allpathslg-52488.out $LOGS/allpathslg-52488.sh
+fi
+
+if [ ! -f $MODF/bioinformatics/graphviz/2.40.1 ]; then
+	echo "graphviz-2.40.1"
+	echo "#!/bin/bash
+	rm -rf $SOFT/graphviz/2.40.1 $SOUR/graphviz-2.40.1
+	module list
+	mkdir -p $SOFT/graphviz/2.40.1
+	cd $SOUR && \
+	wget -O d.tar.gz http://www.graphviz.org/pub/graphviz/stable/SOURCES/graphviz-2.40.1.tar.gz && \
+	mv d.tar.gz graphviz-2.40.1.tar.gz && \
+	tar -zxvf graphviz-2.40.1.tar.gz && \
+	cd graphviz-2.40.1 && \
+	./configure --prefix=$SOFT/graphviz/2.40.1 && \
+	make && make install && \
+	newmod.sh \
+    -s graphviz \
+    -p $MODF/bioinformatics/ \
+    -v 2.40.1 \
+    -d 2.40.1
+    " > $LOGS/graphviz-2.40.1.sh
+    chmod 755 $LOGS/graphviz-2.40.1.sh
+    srun -o $LOGS/graphviz-2.40.1.out $LOGS/graphviz-2.40.1.sh
+fi
+
 exit
 
 #exit
