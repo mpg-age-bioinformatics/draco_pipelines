@@ -42,7 +42,7 @@ if [ ! -f $MODF/general/jup/0.1 ]; then
     -p $MODF/general/ \
     -v 0.1 \
     -d 0.1
-	echo "module load rlang" >> $MODF/general/jup/0.1
+	echo "module load rlang imagemagick/7.0.5-5" >> $MODF/general/jup/0.1
 	echo "module load python" >> $MODF/general/jup/0.1
 fi
 
