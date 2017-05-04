@@ -449,6 +449,26 @@ if [ ! -f $MODF/general/tmux/2.3 ]; then
 	srun -o $LOGS/tmux-2.3.out $LOGS/tmux-2.3.sh
 fi
 
+if [ ! -f $MODF/bioinformatics/bowtie/1.2.0 ]; then
+    echo 'bowtie1-1.2.0'
+    echo '#!/bin/bash
+    module list
+    cd $SOUR
+    wget -O b.zip https://downloads.sourceforge.net/project/bowtie-bio/bowtie/1.2.0/bowtie-1.2-linux-legacy-x86_64.zip
+    mv b.zip bowtie-1.2-linux-legacy-x86_64.zip
+    rm -rf bowtie-1.2-legacy
+    unzip bowtie-1.2-linux-legacy-x86_64.zip 
+    mkdir -p $SOFT/bowtie/1.2.0/bin
+    cp -r bowtie-1.2-legacy/* $SOFT/bowtie/1.2.0/bin
+    newmod.sh \
+    -s bowtie \
+    -p $MODF/bioinformatics/ \
+    -v 1.2.0
+    ' > $LOGS/bowtie-1.2.0.sh
+    chmod 755 $LOGS/bowtie-1.2.0.sh
+    srun -o $LOGS/bowtie-1.2.0.out $LOGS/bowtie-1.2.0.sh
+fi
+
 if [ ! -f $MODF/bioinformatics/bowtie/2.2.9 ]; then
 	echo 'bowtie2-2.2.9'
 	echo '#!/bin/bash
@@ -661,6 +681,28 @@ if [ ! -f $MODF/bioinformatics/skewer/0.2.2 ]; then
 	' > $LOGS/skewer-0.2.2.sh
 	chmod 755 $LOGS/skewer-0.2.2.sh
 	srun -o $LOGS/skewer-0.2.2.out $LOGS/skewer-0.2.2.sh
+fi
+
+if [ ! -f $MODF/bioinformatics/bedtools/2.24.0 ]; then
+    echo 'bedtools-2.24.0'
+    echo '#!/bin/bash
+    module list
+    rm -rf $SOUR/bedtools-2.24.0
+    cd $SOUR && \
+    wget -O d.tar.gz https://github.com/arq5x/bedtools2/archive/v2.24.0.tar.gz && \
+    mv d.tar.gz bedtools-2.24.0.tar.gz && \
+    tar -zxvf bedtools-2.24.0.tar.gz && \
+    cd bedtools2-2.24.0 && \
+    mkdir -p $SOFT/bedtools/2.24.0/ && \
+    make
+    cp -r bin $SOFT/bedtools/2.24.0
+    newmod.sh \
+    -s bedtools \
+    -p $MODF/bioinformatics/ \
+    -v 2.24.0
+    ' > $LOGS/bedtools-2.24.0.sh
+    chmod 755 $LOGS/bedtools-2.24.0.sh
+    srun --mem=8gb -o $LOGS/bedtools-2.24.0.out $LOGS/bedtools-2.24.0.sh
 fi
 
 if [ ! -f $MODF/bioinformatics/bedtools/2.26.0 ]; then
@@ -1363,6 +1405,132 @@ if [ ! -f $MODF/bioinformatics/graphviz/2.40.1 ]; then
     chmod 755 $LOGS/graphviz-2.40.1.sh
     srun -o $LOGS/graphviz-2.40.1.out $LOGS/graphviz-2.40.1.sh
 fi
+
+#--with-url=http://meme-suite.org --enable-build-libxml2 --enable-build-libxslt && \
+
+#if [ ! -f $MODF/bioinformatics/meme/4.11.4 ]; then
+#	echo "meme-4.11.4"
+#	echo "#!/bin/bash
+#	rm -rf $SOFT/meme/4.11.4 $SOUR/meme_4.11.4 $SOUR/meme-4.11.4.tar.gz
+#	module load load python
+#	module list
+#	mkdir -p $SOFT/meme/4.11.4
+#	cd $SOUR && \
+#	wget -O d.tar.gz http://meme-suite.org/meme-software/4.11.4/meme_4.11.4.tar.gz && \
+#	mv d.tar.gz meme-4.11.4.tar.gz && \
+#	tar -zxvf meme-4.11.4.tar.gz && \
+#	cd meme_4.11.4 && \
+#	./configure --prefix=$SOFT/meme/4.11.4 --with-python=/u/jboucas/modules/software/python/2.7.12/bin/python --with-url=http://meme-suite.org --enable-build-libxml2 --enable-build-libxslt && \
+#	make && \
+#    newmod.sh \
+#   -s meme \
+#    -p $MODF/bioinformatics/ \
+#    -v 4.11.4 \
+#    -d 4.11.4 \
+#	" > $LOGS/meme-4.11.4.sh
+#    chmod 755 $LOGS/meme-4.11.4.sh
+#    srun --mem=8gb -o $LOGS/meme-4.11.4.out $LOGS/meme-4.11.4.sh
+#fi
+
+if [ ! -f $MODF/bioinformatics/cutadapt/1.13.0 ]; then
+    echo "cutadapt-1.13.0"
+    echo "#!/bin/bash
+    rm -rf $SOFT/cutadapt/1.13.0 $SOUR/cutadapt $SOUR/cutadapt-1.13.0
+    module load python
+    module list 
+    mkdir -p $SOFT/cutadapt/1.13.0/bin
+    cd $SOUR && \
+	git clone https://github.com/marcelm/cutadapt.git && \
+	mv cutadapt cutadapt-1.13.0 && \
+	cd cutadapt-1.13.0 && \
+	git reset --hard 635eea9d4a396db37d1601fb7f6a732f8968e152 && \
+	python setup.py install && \
+	newmod.sh \
+    -s cutadapt \
+    -p $MODF/bioinformatics/ \
+    -v 1.13.0 \
+    -d 1.13.0 && \
+    echo 'module load python/2.7.12' >> $MODF/bioinformatics/cutadapt/1.13.0
+    " > $LOGS/cutadapt-1.13.0.sh
+    chmod 755 $LOGS/cutadapt-1.13.0.sh
+    srun --mem=8gb -o $LOGS/cutadapt-1.13.0.out $LOGS/cutadapt-1.13.0.sh
+fi
+
+if [ ! -f $MODF/bioinformatics/bamutil/1.0.13 ]; then
+	echo "bamutil-1.0.13"
+	echo "#!/bin/bash
+	rm -rf $SOFT/bamutil/1.0.13
+	module list
+	mkdir -p $SOFT/bamutil/1.0.13/bin
+	cd $SOUR && \
+	wget -O d.tar.gz https://github.com/statgen/bamUtil/archive/v1.0.13.tar.gz && \
+	mv d.tar.gz bamutil-1.0.13.tar.gz && \
+	tar -zxvf bamutil-1.0.13.tar.gz && \
+	cd bamUtil-1.0.13 && \
+	make cloneLib && make && \
+	make install INSTALLDIR=$SOFT/bamutil/1.0.13/bin
+	newmod.sh \
+    -s bamutil \
+    -p $MODF/bioinformatics/ \
+    -v 1.0.13 \
+    -d 1.0.13
+    " > $LOGS/bamutil-1.0.13.sh
+    chmod 755 $LOGS/bamutil-1.0.13.sh
+    srun --mem=8gb -o $LOGS/bamutil-1.0.13.out $LOGS/bamutil-1.0.13.sh
+fi
+
+rm -rf $MODF/bioinformatics/bsexpress/0.5.0
+if [ ! -f $MODF/bioinformatics/bsexpress/0.5.0 ]; then 
+	echo "bsexpress-0.5.0"
+	echo "#!/bin/bash
+	rm -rf $SOFT/bsexpress/0.5.0 $SOUR/cegx_bsexpress $SOUR/bsexpress-0.5.0
+	module load python
+	module list 
+	mkdir -p $SOFT/bsexpress/0.5.0/bin
+	cd $SOUR && \
+	git clone https://bitbucket.org/jorgeboucas/cegx_bsexpress.git && \
+	mv cegx_bsexpress bsexpress-0.5.0 && \
+	cd bsexpress-0.5.0 && \
+	python setup.py install --install-scripts $SOFT/bsExpress/0.5.0/bin
+	newmod.sh \
+    -s bsexpress \
+    -p $MODF/bioinformatics/ \
+    -v 0.5.0 \
+    -d 0.5.0 && \
+	echo 'module load python/2.7.12 jdk/1.8 cutadapt/1.13.0 bamutil/1.0.13 rlang/3.3.2 bedtools/2.26.0 bowtie/2.2.9 samtools/1.3.1' >> $MODF/bioinformatics/bsexpress/0.5.0
+	" > $LOGS/bsexpress-0.5.0.sh
+    chmod 755 $LOGS/bsexpress-0.5.0.sh
+    srun --mem=8gb -o $LOGS/bsexpress-0.5.0.out $LOGS/bsexpress-0.5.0.sh
+fi
+
+if [ ! -f $MODF/bioinformatics/seqtk/1.2.r94 ]; then
+    echo "seqtk-1.2.r94"
+    echo "#!/bin/bash
+    rm -rf $SOFT/seqtk/1.2.r94 $SOUR/seqtk-1.2.r94.tar.gz
+	module list
+	mkdir -p $SOFT/seqtk/1.2.r94/bin
+	cd $SOUR && \
+	wget -O d.tar.gz https://github.com/lh3/seqtk/archive/v1.2.tar.gz && \
+	mv d.tar.gz seqtk-1.2.r94.tar.gz && \
+	tar -zxvf seqtk-1.2.r94.tar.gz && \
+	cd seqtk-1.2 && \
+	make && \
+	cp * $SOFT/seqtk/1.2.r94/bin && \
+	newmod.sh \
+    -s seqtk \
+    -p $MODF/bioinformatics/ \
+    -v 1.2.r94 \
+    -d 1.2.r94
+    " > $LOGS/seqtk-1.2.r94.sh
+    chmod 755 $LOGS/seqtk-1.2.r94.sh
+    srun --mem=8gb -o $LOGS/seqtk-1.2.r94.out $LOGS/seqtk-1.2.r94.sh
+fi
+
+	
+	
+
+
+
 
 exit
 
