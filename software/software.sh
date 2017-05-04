@@ -1479,7 +1479,6 @@ if [ ! -f $MODF/bioinformatics/bamutil/1.0.13 ]; then
     srun --mem=8gb -o $LOGS/bamutil-1.0.13.out $LOGS/bamutil-1.0.13.sh
 fi
 
-rm -rf $MODF/bioinformatics/bsexpress/0.5.0
 if [ ! -f $MODF/bioinformatics/bsexpress/0.5.0 ]; then 
 	echo "bsexpress-0.5.0"
 	echo "#!/bin/bash
@@ -1526,11 +1525,28 @@ if [ ! -f $MODF/bioinformatics/seqtk/1.2.r94 ]; then
     srun --mem=8gb -o $LOGS/seqtk-1.2.r94.out $LOGS/seqtk-1.2.r94.sh
 fi
 
-	
-	
-
-
-
+if [ ! -f $MODF/libs/imagemagick/7.0.5-5 ]; then
+	echo "imagemagick-7.0.5-5"
+	echo "#!/bin/bash
+	module list
+	mkdir -p ${SOFT}/imagemagick/7.0.5-5
+	cd $SOUR && \
+	wget -O d.tar.gz https://www.imagemagick.org/download/ImageMagick.tar.gz
+	mv d.tar.gz ImageMagick-7.0.5-5.tar.gz 
+	tar -zxvf ImageMagick-7.0.5-5.tar.gz 
+	cd ImageMagick-7.0.5-5
+	./configure --prefix=${SOFT}/imagemagick/7.0.5-5
+	make
+	make install
+	newmod.sh \
+	-s imagemagick \
+	-p $MODF/libs \
+	-v 7.0.5-5 \
+	-d 7.0.5-5
+	" > $LOGS/imagemagick-7.0.5-5.sh
+	chmod 755 $LOGS/imagemagick-7.0.5-5.sh 
+	srun --mem=8gb -o $LOGS/imagemagick-7.0.5-5.out $LOGS/imagemagick-7.0.5-5.sh 
+fi
 
 exit
 
