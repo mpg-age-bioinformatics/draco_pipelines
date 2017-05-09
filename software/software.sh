@@ -1423,11 +1423,11 @@ fi
 #	./configure --prefix=$SOFT/meme/4.11.4 --with-python=/u/jboucas/modules/software/python/2.7.12/bin/python --with-url=http://meme-suite.org --enable-build-libxml2 --enable-build-libxslt && \
 #	make && \
 #    newmod.sh \
-#   -s meme \
+#    -s meme \
 #    -p $MODF/bioinformatics/ \
 #    -v 4.11.4 \
 #    -d 4.11.4 \
-#	" > $LOGS/meme-4.11.4.sh
+# 	" > $LOGS/meme-4.11.4.sh
 #    chmod 755 $LOGS/meme-4.11.4.sh
 #    srun --mem=8gb -o $LOGS/meme-4.11.4.out $LOGS/meme-4.11.4.sh
 #fi
@@ -1546,6 +1546,327 @@ if [ ! -f $MODF/libs/imagemagick/7.0.5-5 ]; then
 	" > $LOGS/imagemagick-7.0.5-5.sh
 	chmod 755 $LOGS/imagemagick-7.0.5-5.sh 
 	srun --mem=8gb -o $LOGS/imagemagick-7.0.5-5.out $LOGS/imagemagick-7.0.5-5.sh 
+fi
+
+if [ ! -f $MODF/general/perl/5.24.1 ]; then
+	echo "perl-5.24.1"
+	echo "#!/bin/bash
+	module list
+	mkdir -p ${SOFT}/perl/5.24.1/libraries
+	cd ${SOUR} 
+	wget -O d.tar.gz http://www.cpan.org/src/5.0/perl-5.24.1.tar.gz
+	mv d.tar.gz perl-5.24.1.tar.gz
+	tar -zxvf perl-5.24.1.tar.gz
+	cd perl-5.24.1
+	sed -i 's/dbmclose();/dbmclose(db);/g' ext/ODBM_File/ODBM_File.xs
+	./Configure -des -Dprefix=${SOFT}/perl/5.24.1
+	make 
+	make install
+    newmod.sh \
+    -s perl \
+    -p $MODF/general \
+    -v 5.24.1 \
+    -d 5.24.1
+	echo 'prepend-path PERL5LIB ${SOFT}/perl/5.24.1/libraries' >> $MODF/general/perl/5.24.1
+    " > $LOGS/perl-5.24.1.sh
+    chmod 755 $LOGS/perl-5.24.1.sh 
+    srun --mem=8gb -o $LOGS/perl-5.24.1.out $LOGS/perl-5.24.1.sh 
+fi
+
+if [ ! -f $MODF/libs/expat/2.2.0 ]; then
+    echo "expat-2.2.0"
+    echo "#!/bin/bash
+    module list
+    mkdir -p ${SOFT}/expat/2.2.0
+    cd $SOUR && \
+    wget -O d.tar.bz2 https://downloads.sourceforge.net/project/expat/expat/2.2.0/expat-2.2.0.tar.bz2
+    mv d.tar.bz2 expat-2.2.0.tar.bz2
+    tar -jxvf expat-2.2.0.tar.bz2
+    cd expat-2.2.0
+    ./configure --prefix=${SOFT}/expat/2.2.0
+    make
+    make install
+    newmod.sh \
+    -s expat \
+    -p $MODF/libs \
+    -v 2.2.0 \
+    -d 2.2.0
+    " > $LOGS/expat-2.2.0.sh
+    chmod 755 $LOGS/expat-2.2.0.sh 
+    srun --mem=8gb -o $LOGS/expat-2.2.0.out $LOGS/expat-2.2.0.sh 
+fi
+
+perlpackages="inc-latest-0.500.tar.gz Module-Build-0.4222.tar.gz HTML-Tree-5.06.tar.gz \
+HTML-Tagset-3.20.tar.gz File-Slurp-Tiny-0.004.tar.gz libwww-perl-6.26.tar.gz Log-Report-1.19.tar.gz \
+XML-Compile-1.56.tar.gz XML-Compile-Cache-1.05.tar.gz XML-Compile-Tester-0.90.tar.gz IPC-Run3-0.048.tar.gz \
+Probe-Perl-0.03.tar.gz XML-NamespaceSupport-1.12.tar.gz XML-SAX-Base-1.09.tar.gz XML-SAX-0.99.tar.gz XML-SAX-Expat-0.51.tar.gz \
+HTML-Parser-3.72.tar.gz HTML-Template-2.95.tar.gz JSON-2.90.tar.gz XML-Compile-SOAP-3.21.tar.gz \
+XML-Compile-WSDL11-3.06.tar.gz Log-Log4perl-1.49.tar.gz Math-CDF-0.1.tar.gz Test-Script-1.18.tar.gz \
+Test-Simple-1.302085.tar.gz XML-Simple-2.24.tar.gz File-Which-1.21.tar.gz XML-Parser-2.44.tar.gz"
+
+if [ ! -f $MODF/bioinformatics/meme/4.11.2 ]; then
+    echo "meme-4.11.2"
+    echo "#!/bin/bash
+    rm -rf $SOFT/meme/4.11.2 $SOUR/meme_4.11.2 $SOUR/meme-4.11.2.tar.gz $SOUR/meme-4.11.2_2.tar.gz
+    module load python/2.7.12 perl/5.24.1
+    module list
+    mkdir -p $SOFT/meme/4.11.2/perl/lib
+    export PERL5LIB=$SOFT/meme/4.11.2/perl/lib:\$PERL5LIB
+   	cd $SOUR
+
+	for f in ${perlpackages}; do rm -rf \${f}; done
+
+	wget http://search.cpan.org/CPAN/authors/id/D/DA/DAGOLDEN/inc-latest-0.500.tar.gz
+
+	wget http://search.cpan.org/CPAN/authors/id/L/LE/LEONT/Module-Build-0.4222.tar.gz
+	wget http://search.cpan.org/CPAN/authors/id/K/KE/KENTNL/HTML-Tree-5.06.tar.gz
+
+	wget http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/HTML-Parser-3.72.tar.gz
+	wget http://search.cpan.org/CPAN/authors/id/W/WO/WONKO/HTML-Template-2.95.tar.gz
+	wget http://search.cpan.org/CPAN/authors/id/M/MA/MAKAMAKA/JSON-2.90.tar.gz
+	wget http://search.cpan.org/CPAN/authors/id/M/MA/MARKOV/XML-Compile-SOAP-3.21.tar.gz
+	wget http://search.cpan.org/CPAN/authors/id/M/MA/MARKOV/XML-Compile-WSDL11-3.06.tar.gz
+	wget http://search.cpan.org/CPAN/authors/id/M/MS/MSCHILLI/Log-Log4perl-1.49.tar.gz
+	wget http://search.cpan.org/CPAN/authors/id/C/CA/CALLAHAN/Math-CDF-0.1.tar.gz
+
+	wget http://search.cpan.org/CPAN/authors/id/P/PL/PLICEASE/Test-Script-1.18.tar.gz
+	wget http://search.cpan.org/CPAN/authors/id/E/EX/EXODIST/Test-Simple-1.302085.tar.gz
+	wget http://search.cpan.org/CPAN/authors/id/G/GR/GRANTM/XML-Simple-2.24.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/P/PL/PLICEASE/File-Which-1.21.tar.gz
+
+	wget http://search.cpan.org/CPAN/authors/id/P/PE/PETDANCE/HTML-Tagset-3.20.tar.gz
+	wget http://search.cpan.org/CPAN/authors/id/L/LE/LEONT/File-Slurp-Tiny-0.004.tar.gz
+	wget http://search.cpan.org/CPAN/authors/id/O/OA/OALDERS/libwww-perl-6.26.tar.gz
+	wget http://search.cpan.org/CPAN/authors/id/M/MA/MARKOV/Log-Report-1.19.tar.gz
+	wget http://search.cpan.org/CPAN/authors/id/M/MA/MARKOV/XML-Compile-1.56.tar.gz
+	wget http://search.cpan.org/CPAN/authors/id/M/MA/MARKOV/XML-Compile-Cache-1.05.tar.gz
+	wget http://search.cpan.org/CPAN/authors/id/M/MA/MARKOV/XML-Compile-Tester-0.90.tar.gz
+	wget http://search.cpan.org/CPAN/authors/id/R/RJ/RJBS/IPC-Run3-0.048.tar.gz
+	wget http://search.cpan.org/CPAN/authors/id/K/KW/KWILLIAMS/Probe-Perl-0.03.tar.gz
+	wget http://search.cpan.org/CPAN/authors/id/P/PE/PERIGRIN/XML-NamespaceSupport-1.12.tar.gz
+	wget http://search.cpan.org/CPAN/authors/id/G/GR/GRANTM/XML-SAX-Base-1.09.tar.gz
+	wget http://search.cpan.org/CPAN/authors/id/G/GR/GRANTM/XML-SAX-0.99.tar.gz
+	wget http://search.cpan.org/CPAN/authors/id/B/BJ/BJOERN/XML-SAX-Expat-0.51.tar.gz
+	wget http://search.cpan.org/CPAN/authors/id/T/TO/TODDR/XML-Parser-2.44.tar.gz
+
+
+	for f in ${perlpackages}; do rm -rf \${f%.tar.gz}; tar -zxvf \${f}; done
+
+	export PERL_MM_USE_DEFAULT=True
+
+	for f in  inc-latest-0.500.tar.gz \
+HTML-Tagset-3.20.tar.gz File-Slurp-Tiny-0.004.tar.gz libwww-perl-6.26.tar.gz Log-Report-1.19.tar.gz \
+XML-Compile-1.56.tar.gz XML-Compile-Cache-1.05.tar.gz XML-Compile-Tester-0.90.tar.gz IPC-Run3-0.048.tar.gz \
+Probe-Perl-0.03.tar.gz XML-NamespaceSupport-1.12.tar.gz XML-SAX-Base-1.09.tar.gz XML-SAX-0.99.tar.gz XML-SAX-Expat-0.51.tar.gz \
+HTML-Parser-3.72.tar.gz HTML-Template-2.95.tar.gz JSON-2.90.tar.gz XML-Compile-SOAP-3.21.tar.gz \
+XML-Compile-WSDL11-3.06.tar.gz Log-Log4perl-1.49.tar.gz Math-CDF-0.1.tar.gz Test-Script-1.18.tar.gz \
+Test-Simple-1.302085.tar.gz XML-Simple-2.24.tar.gz File-Which-1.21.tar.gz XML-Parser-2.44.tar.gz; 
+	do printf **\${f}**; cd  $SOUR/\${f%.tar.gz}; perl Makefile.PL PREFIX=$SOFT/meme/4.11.2/perl LIB=$SOFT/meme/4.11.2/perl/lib EXPATLIBPATH=${SOFT}/expat/2.2.0/lib EXPATINCPATH=${SOFT}/expat/2.2.0/include ; \
+make; make install; cd ../; done
+
+    for f in Module-Build-0.4222 HTML-Tree-5.06; do echo \${f}; cd $SOUR/\${f} ; perl Build.PL PREFIX=$SOFT/meme/4.11.2/perl LIB=$SOFT/meme/4.11.2/perl/lib; \
+./Build PREFIX=$SOFT/meme/4.11.2/perl LIB=$SOFT/meme/4.11.2/perl/lib; ./Build install; cd ..; done
+
+    cd $SOUR && \
+    wget -O d.tar.gz http://meme-suite.org/meme-software/4.11.2/meme_4.11.2_2.tar.gz && \
+    mv d.tar.gz meme-4.11.2_2.tar.gz && \
+    tar -zxvf meme-4.11.2_2.tar.gz && \
+    cd meme_4.11.2 && \
+	sed -i '/\#include <unistd.h>/a \#include <sys\/wait.h>' src/mast.c && \ 
+    ./configure --prefix=$SOFT/meme/4.11.2 --with-python=/u/jboucas/modules/software/python/2.7.12/bin/python --with-url=http://meme-suite.org --enable-build-libxml2 --enable-build-libxslt && \
+    make && \
+	make test && \
+	make install && \
+    newmod.sh \
+    -s meme \
+    -p $MODF/bioinformatics/ \
+    -v 4.11.2 \
+    -d 4.11.2
+	echo 'module load python/2.7.12 perl/5.24.1' >> $MODF/bioinformatics/meme/4.11.2
+	echo 'prepend-path PERL5LIB $SOFT/meme/4.11.2/perl/lib' >> $MODF/bioinformatics/meme/4.11.2
+    " > $LOGS/meme-4.11.2.sh
+    chmod 755 $LOGS/meme-4.11.2.sh
+    srun --mem=8gb -o $LOGS/meme-4.11.2.out $LOGS/meme-4.11.2.sh
+fi
+
+if [ ! -f $MODF/bioinformatics/meme/4.11.3 ]; then
+    echo "meme-4.11.3"
+    echo "#!/bin/bash
+    rm -rf $SOFT/meme/4.11.3 $SOUR/meme_4.11.3 $SOUR/meme-4.11.3_1.tar.gz
+    module load python/2.7.12 perl/5.24.1
+    module list
+    mkdir -p $SOFT/meme/4.11.3/perl/lib
+    export PERL5LIB=$SOFT/meme/4.11.3/perl/lib:\$PERL5LIB
+    cd $SOUR
+
+    for f in ${perlpackages}; do rm -rf \${f}; done
+
+    wget http://search.cpan.org/CPAN/authors/id/D/DA/DAGOLDEN/inc-latest-0.500.tar.gz
+
+    wget http://search.cpan.org/CPAN/authors/id/L/LE/LEONT/Module-Build-0.4222.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/K/KE/KENTNL/HTML-Tree-5.06.tar.gz
+
+    wget http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/HTML-Parser-3.72.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/W/WO/WONKO/HTML-Template-2.95.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/M/MA/MAKAMAKA/JSON-2.90.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/M/MA/MARKOV/XML-Compile-SOAP-3.21.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/M/MA/MARKOV/XML-Compile-WSDL11-3.06.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/M/MS/MSCHILLI/Log-Log4perl-1.49.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/C/CA/CALLAHAN/Math-CDF-0.1.tar.gz
+
+    wget http://search.cpan.org/CPAN/authors/id/P/PL/PLICEASE/Test-Script-1.18.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/E/EX/EXODIST/Test-Simple-1.302085.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/G/GR/GRANTM/XML-Simple-2.24.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/P/PL/PLICEASE/File-Which-1.21.tar.gz
+
+    wget http://search.cpan.org/CPAN/authors/id/P/PE/PETDANCE/HTML-Tagset-3.20.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/L/LE/LEONT/File-Slurp-Tiny-0.004.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/O/OA/OALDERS/libwww-perl-6.26.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/M/MA/MARKOV/Log-Report-1.19.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/M/MA/MARKOV/XML-Compile-1.56.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/M/MA/MARKOV/XML-Compile-Cache-1.05.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/M/MA/MARKOV/XML-Compile-Tester-0.90.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/R/RJ/RJBS/IPC-Run3-0.048.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/K/KW/KWILLIAMS/Probe-Perl-0.03.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/P/PE/PERIGRIN/XML-NamespaceSupport-1.12.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/G/GR/GRANTM/XML-SAX-Base-1.09.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/G/GR/GRANTM/XML-SAX-0.99.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/B/BJ/BJOERN/XML-SAX-Expat-0.51.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/T/TO/TODDR/XML-Parser-2.44.tar.gz
+
+
+    for f in ${perlpackages}; do rm -rf \${f%.tar.gz}; tar -zxvf \${f}; done
+
+    export PERL_MM_USE_DEFAULT=True
+
+    for f in  inc-latest-0.500.tar.gz \
+HTML-Tagset-3.20.tar.gz File-Slurp-Tiny-0.004.tar.gz libwww-perl-6.26.tar.gz Log-Report-1.19.tar.gz \
+XML-Compile-1.56.tar.gz XML-Compile-Cache-1.05.tar.gz XML-Compile-Tester-0.90.tar.gz IPC-Run3-0.048.tar.gz \
+Probe-Perl-0.03.tar.gz XML-NamespaceSupport-1.12.tar.gz XML-SAX-Base-1.09.tar.gz XML-SAX-0.99.tar.gz XML-SAX-Expat-0.51.tar.gz \
+HTML-Parser-3.72.tar.gz HTML-Template-2.95.tar.gz JSON-2.90.tar.gz XML-Compile-SOAP-3.21.tar.gz \
+XML-Compile-WSDL11-3.06.tar.gz Log-Log4perl-1.49.tar.gz Math-CDF-0.1.tar.gz Test-Script-1.18.tar.gz \
+Test-Simple-1.302085.tar.gz XML-Simple-2.24.tar.gz File-Which-1.21.tar.gz XML-Parser-2.44.tar.gz; 
+    do printf **\${f}**; cd  $SOUR/\${f%.tar.gz}; perl Makefile.PL PREFIX=$SOFT/meme/4.11.3/perl LIB=$SOFT/meme/4.11.3/perl/lib EXPATLIBPATH=${SOFT}/expat/2.2.0/lib EXPATINCPATH=${SOFT}/expat/2.2.0/include ; \
+make; make install; cd ../; done
+
+    for f in Module-Build-0.4222 HTML-Tree-5.06; do echo \${f}; cd $SOUR/\${f} ; perl Build.PL PREFIX=$SOFT/meme/4.11.3/perl LIB=$SOFT/meme/4.11.3/perl/lib; \
+./Build PREFIX=$SOFT/meme/4.11.3/perl LIB=$SOFT/meme/4.11.3/perl/lib; ./Build install; cd ..; done
+
+    cd $SOUR && \
+    wget -O d.tar.gz http://meme-suite.org/meme-software/4.11.3/meme_4.11.3_1.tar.gz && \
+    mv d.tar.gz meme-4.11.3_1.tar.gz && \
+    tar -zxvf meme-4.11.3_1.tar.gz && \
+    cd meme_4.11.3 && \
+    sed -i '/\#include <unistd.h>/a \#include <sys\/wait.h>' src/mast.c && \ 
+    ./configure --prefix=$SOFT/meme/4.11.3 --with-python=/u/jboucas/modules/software/python/2.7.12/bin/python --with-url=http://meme-suite.org --enable-build-libxml2 --enable-build-libxslt && \
+    make && \
+    make test
+	cd $SOUR/meme_4.11.3 && \
+    make install && \
+    newmod.sh \
+    -s meme \
+    -p $MODF/bioinformatics/ \
+    -v 4.11.3 \
+    -d 4.11.3
+    echo 'module load python/2.7.12 perl/5.24.1' >> $MODF/bioinformatics/meme/4.11.3
+    echo 'prepend-path PERL5LIB $SOFT/meme/4.11.3/perl/lib' >> $MODF/bioinformatics/meme/4.11.3
+    " > $LOGS/meme-4.11.3.sh
+    chmod 755 $LOGS/meme-4.11.3.sh
+    srun --mem=8gb -o $LOGS/meme-4.11.3.out $LOGS/meme-4.11.3.sh
+fi
+
+perlpackages="inc-latest-0.500.tar.gz Module-Build-0.4222.tar.gz HTML-Tree-5.06.tar.gz \
+HTML-Tagset-3.20.tar.gz File-Slurp-Tiny-0.004.tar.gz libwww-perl-6.26.tar.gz Log-Report-1.19.tar.gz \
+XML-Compile-1.56.tar.gz XML-Compile-Cache-1.05.tar.gz XML-Compile-Tester-0.90.tar.gz IPC-Run3-0.048.tar.gz \
+Probe-Perl-0.03.tar.gz XML-NamespaceSupport-1.12.tar.gz XML-SAX-Base-1.09.tar.gz XML-SAX-0.99.tar.gz XML-SAX-Expat-0.51.tar.gz \
+HTML-Parser-3.72.tar.gz HTML-Template-2.95.tar.gz JSON-2.90.tar.gz XML-Compile-SOAP-3.21.tar.gz \
+XML-Compile-WSDL11-3.06.tar.gz Log-Log4perl-1.49.tar.gz Math-CDF-0.1.tar.gz Test-Script-1.18.tar.gz \
+Test-Simple-1.302085.tar.gz XML-Simple-2.24.tar.gz File-Which-1.21.tar.gz XML-Parser-2.44.tar.gz"
+
+
+if [ ! -f $MODF/bioinformatics/meme/4.11.4 ]; then
+    echo "meme-4.11.4"
+    echo "#!/bin/bash
+    rm -rf $SOFT/meme/4.11.4 $SOUR/meme_4.11.4 $SOUR/meme-4.11.4.tar.gz
+    module load python/2.7.12 perl/5.24.1
+    module list
+    mkdir -p $SOFT/meme/4.11.4/perl/lib
+    export PERL5LIB=$SOFT/meme/4.11.4/perl/lib:\$PERL5LIB
+    cd $SOUR
+
+    for f in ${perlpackages}; do rm -rf \${f}; done
+
+    wget http://search.cpan.org/CPAN/authors/id/D/DA/DAGOLDEN/inc-latest-0.500.tar.gz
+
+    wget http://search.cpan.org/CPAN/authors/id/L/LE/LEONT/Module-Build-0.4222.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/K/KE/KENTNL/HTML-Tree-5.06.tar.gz
+
+    wget http://search.cpan.org/CPAN/authors/id/G/GA/GAAS/HTML-Parser-3.72.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/W/WO/WONKO/HTML-Template-2.95.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/M/MA/MAKAMAKA/JSON-2.90.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/M/MA/MARKOV/XML-Compile-SOAP-3.21.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/M/MA/MARKOV/XML-Compile-WSDL11-3.06.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/M/MS/MSCHILLI/Log-Log4perl-1.49.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/C/CA/CALLAHAN/Math-CDF-0.1.tar.gz
+
+    wget http://search.cpan.org/CPAN/authors/id/P/PL/PLICEASE/Test-Script-1.18.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/E/EX/EXODIST/Test-Simple-1.302085.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/G/GR/GRANTM/XML-Simple-2.24.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/P/PL/PLICEASE/File-Which-1.21.tar.gz
+
+    wget http://search.cpan.org/CPAN/authors/id/P/PE/PETDANCE/HTML-Tagset-3.20.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/L/LE/LEONT/File-Slurp-Tiny-0.004.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/O/OA/OALDERS/libwww-perl-6.26.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/M/MA/MARKOV/Log-Report-1.19.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/M/MA/MARKOV/XML-Compile-1.56.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/M/MA/MARKOV/XML-Compile-Cache-1.05.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/M/MA/MARKOV/XML-Compile-Tester-0.90.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/R/RJ/RJBS/IPC-Run3-0.048.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/K/KW/KWILLIAMS/Probe-Perl-0.03.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/P/PE/PERIGRIN/XML-NamespaceSupport-1.12.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/G/GR/GRANTM/XML-SAX-Base-1.09.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/G/GR/GRANTM/XML-SAX-0.99.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/B/BJ/BJOERN/XML-SAX-Expat-0.51.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/T/TO/TODDR/XML-Parser-2.44.tar.gz
+
+
+    for f in ${perlpackages}; do rm -rf \${f%.tar.gz}; tar -zxvf \${f}; done
+
+    export PERL_MM_USE_DEFAULT=True
+
+    for f in  inc-latest-0.500.tar.gz \
+HTML-Tagset-3.20.tar.gz File-Slurp-Tiny-0.004.tar.gz libwww-perl-6.26.tar.gz Log-Report-1.19.tar.gz \
+XML-Compile-1.56.tar.gz XML-Compile-Cache-1.05.tar.gz XML-Compile-Tester-0.90.tar.gz IPC-Run3-0.048.tar.gz \
+Probe-Perl-0.03.tar.gz XML-NamespaceSupport-1.12.tar.gz XML-SAX-Base-1.09.tar.gz XML-SAX-0.99.tar.gz XML-SAX-Expat-0.51.tar.gz \
+HTML-Parser-3.72.tar.gz HTML-Template-2.95.tar.gz JSON-2.90.tar.gz XML-Compile-SOAP-3.21.tar.gz \
+XML-Compile-WSDL11-3.06.tar.gz Log-Log4perl-1.49.tar.gz Math-CDF-0.1.tar.gz Test-Script-1.18.tar.gz \
+Test-Simple-1.302085.tar.gz XML-Simple-2.24.tar.gz File-Which-1.21.tar.gz XML-Parser-2.44.tar.gz; 
+    do printf **\${f}**; cd  $SOUR/\${f%.tar.gz}; perl Makefile.PL PREFIX=$SOFT/meme/4.11.4/perl LIB=$SOFT/meme/4.11.4/perl/lib EXPATLIBPATH=${SOFT}/expat/2.2.0/lib EXPATINCPATH=${SOFT}/expat/2.2.0/include ; \
+make; make install; cd ../; done
+
+    for f in Module-Build-0.4222 HTML-Tree-5.06; do echo \${f}; cd $SOUR/\${f} ; perl Build.PL PREFIX=$SOFT/meme/4.11.4/perl LIB=$SOFT/meme/4.11.4/perl/lib; \
+./Build PREFIX=$SOFT/meme/4.11.4/perl LIB=$SOFT/meme/4.11.4/perl/lib; ./Build install; cd ..; done
+
+    cd $SOUR && \
+    wget -O d.tar.gz http://meme-suite.org/meme-software/4.11.4/meme_4.11.4.tar.gz && \
+    mv d.tar.gz meme-4.11.4.tar.gz && \
+    tar -zxvf meme-4.11.4.tar.gz && \
+    cd meme_4.11.4 && \
+    sed -i '/\#include <unistd.h>/a \#include <sys\/wait.h>' src/mast.c && \ 
+    ./configure --prefix=$SOFT/meme/4.11.4 --with-python=/u/jboucas/modules/software/python/2.7.12/bin/python --with-url=http://meme-suite.org --enable-build-libxml2 --enable-build-libxslt && \
+    make && \
+    make test
+	cd $SOUR/meme_4.11.4 && \
+    make install && \
+    newmod.sh \
+    -s meme \
+    -p $MODF/bioinformatics/ \
+    -v 4.11.4
+	echo 'module load python/2.7.12 perl/5.24.1' >> $MODF/bioinformatics/meme/4.11.4
+    echo 'prepend-path PERL5LIB $SOFT/meme/4.11.4/perl/lib' >> $MODF/bioinformatics/meme/4.11.4
+    " > $LOGS/meme-4.11.4.sh
+    chmod 755 $LOGS/meme-4.11.4.sh
+    srun --mem=8gb -o $LOGS/meme-4.11.4.out $LOGS/meme-4.11.4.sh
 fi
 
 exit
