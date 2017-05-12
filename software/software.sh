@@ -321,6 +321,41 @@ if [ ! -f $MODF/libs/openssl/1.1.0c ]; then
     srun -o $LOGS/openssl-1.1.0c.out $LOGS/openssl-1.1.0c.sh # -o $LOGS/freetype-2.7.out
 fi
 
+if [ ! -f $MODF/general/rlang/3.1.1 ]; then
+    echo 'rlang-3.1.1'
+    echo '#!/bin/bash
+    module list
+    rm -rf $SOUR/R-3.1.1 $SOFT/rlang/3.1.1
+    cd $SOUR && \
+    wget -O d.tar.gz https://cloud.r-project.org/src/base/R-3/R-3.1.1.tar.gz && \
+    mv d.tar.gz R-3.1.1.tar.gz && \
+    tar -xzf R-3.1.1.tar.gz && \
+    cd R-3.1.1 && \
+    mkdir -p $SOFT/rlang/3.1.1/bin && 
+    ./configure --prefix=$SOFT/rlang/3.1.1 CFLAGS="-I$SOFT/openssl/1.1.0c/include/openssl -I$SOFT/libz/1.2.8/include -I$SOFT/freetype/2.7/include -I$SOFT/ncurses/6.0/include/ncurses -I$SOFT/libevent/2.0.22/include -I$SOFT/bzip2/1.0.6/include -I$SOFT/xz/5.2.2/include -I$SOFT/pcre/8.39/include -I$SOFT/curl/7.51.0/include" LDFLAGS="-L$SOFT/openssl/1.1.0c/lib -L$SOFT/libz/1.2.8/lib -L$SOFT/freetype/2.7/lib -L$SOFT/ncurses/6.0/lib -L$SOFT/libevent/2.0.22/lib -L$SOFT/bzip2/1.0.6/lib -L$SOFT/xz/5.2.2/lib -L$SOFT/pcre/8.39/lib -L$SOFT/curl/7.51.0/lib" --with-readline --with-tcltk --enable-BLAS-shlib --enable-R-profiling --enable-R-shlib=yes --enable-memory-profiling --with-blas --with-lapack
+    # other options -with-blas --with-lapack --with-cairo --with-jpeglib CFLAGS="-I$LFS/include" LDFLAGS="-L$LFS/lib"
+    make && make install && \
+    newmod.sh \
+    -s rlang \
+    -p $MODF/general/ \
+    -v 3.1.1 &&
+    echo "set home $::env(HOME)" >> $MODF/general/rlang/3.1.1
+    echo "exec /bin/mkdir -p \$home/.R/3.1.1/R_LIBS_USER/" >> $MODF/general/rlang/3.1.1
+    echo "setenv R_LIBS_USER \$home/.R/3.1.1/R_LIBS_USER" >> $MODF/general/rlang/3.1.1
+    echo "prepend-path LD_LIBRARY_PATH $SOFT/rlang/3.1.1/lib64/R/lib" >> $MODF/general/rlang/3.1.1
+    echo "prepend-path CPATH $SOFT/rlang/3.1.1/lib64/R/include" >> $MODF/general/rlang/3.1.1
+    echo "prepend-path C_INCLUDE_PATH $SOFT/rlang/3.1.1/lib64/R/include" >> $MODF/general/rlang/3.1.1
+    echo "prepend-path CPLUS_INCLUDE_PATH $SOFT/rlang/3.1.1/lib64/R/include" >> $MODF/general/rlang/3.1.1
+    echo "prepend-path OBJC_INCLUDE_PATH $SOFT/rlang/3.1.1/lib64/R/include" >> $MODF/general/rlang/3.1.1
+    echo "module load gcc/6.2" >> $MODF/general/rlang/3.1.1
+    echo "module load openssl/1.1.0c" >> $MODF/general/rlang/3.1.1
+    mv $SOFT/rlang/3.1.1/lib64/R/lib/libRblas.so $SOFT/rlang/3.1.1/lib64/R/lib/old_libRblas.so
+    ln -s $SOFT/openblas/0.2.19/lib/libopenblas.so $SOFT/rlang/3.1.1/lib64/R/lib/libRblas.so
+    ' > $LOGS/rlang-3.1.1.sh
+    chmod 755 $LOGS/rlang-3.1.1.sh
+    srun --mem=8gb -o $LOGS/rlang-3.1.1.out $LOGS/rlang-3.1.1.sh #-o $LOGS/r-3.3.2.out
+fi
+
 if [ ! -f $MODF/general/rlang/3.3.2 ]; then
 	echo 'rlang-3.3.2'
 	echo '#!/bin/bash
