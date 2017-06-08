@@ -1907,6 +1907,31 @@ make; make install; cd ../; done
     srun --mem=8gb -o $LOGS/meme-4.11.4.out $LOGS/meme-4.11.4.sh
 fi
 
+rm -rf $MODF/bioinformatics/ngsutils/0.5.9
+
+if [ ! -f $MODF/bioinformatics/ngsutils/0.5.9 ]; then
+    echo 'ngsutils-0.5.9'
+    echo "#!/bin/bash
+    rm -rf $SOFT/ngsutils/0.5.9 $SOUR/ngsutils $SOUR/ngsutils-ngsutils-0.5.9
+    module load python/2.7.12
+    module list 
+    mkdir -p $SOFT/ngsutils/0.5.9
+    cd $SOUR && wget -O d.tar.gz  https://github.com/ngsutils/ngsutils/archive/ngsutils-0.5.9.tar.gz && \
+    mv d.tar.gz ngsutils-0.5.9.tar.gz && \
+    tar -zxvf ngsutils-0.5.9.tar.gz && \
+    cd ngsutils-ngsutils-0.5.9 && \
+	sed -i 's/\# cython==0.16/cython==0.16/g' requirements.txt && \
+	sed -i 's/pysam>=0.4.1/pysam==0.4.1/g' requirements.txt && \
+    PYTHON=python make && \
+    cp -r * $SOFT/ngsutils/0.5.9/
+    newmod.sh -s ngsutils -p $MODF/bioinformatics/ -v 0.5.9 -d 0.5.9 && \
+    echo 'module load python/2.7.12' >> $MODF/bioinformatics/ngsutils/0.5.9
+    " > $LOGS/ngsutils-0.5.9.sh
+    chmod 755 $LOGS/ngsutils-0.5.9.sh
+    srun --mem=8gb -o $LOGS/ngsutils-0.5.9.out $LOGS/ngsutils-0.5.9.sh
+fi
+
+
 exit
 
 #exit
