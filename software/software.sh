@@ -1602,6 +1602,9 @@ if [ ! -f $MODF/general/perl/5.24.1 ]; then
     -p $MODF/general \
     -v 5.24.1 \
     -d 5.24.1
+	cd $SOFT/perl/5.24.1/bin
+	curl -L https://cpanmin.us/ -o cpanm
+	chmod +x cpanm
 	echo 'prepend-path PERL5LIB ${SOFT}/perl/5.24.1/libraries' >> $MODF/general/perl/5.24.1
     " > $LOGS/perl-5.24.1.sh
     chmod 755 $LOGS/perl-5.24.1.sh 
