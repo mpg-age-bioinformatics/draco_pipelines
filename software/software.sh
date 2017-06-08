@@ -1929,8 +1929,6 @@ if [ ! -f $MODF/bioinformatics/ngsutils/0.5.9 ]; then
     srun --mem=8gb -o $LOGS/ngsutils-0.5.9.out $LOGS/ngsutils-0.5.9.sh
 fi
 
-rm -rf $MODF/bioinformatics/segemehl/0.2.0
-
 if [ ! -f $MODF/bioinformatics/segemehl/0.2.0 ]; then
     echo 'segemehl-0.2.0'
     echo "#!/bin/bash
@@ -1951,8 +1949,68 @@ if [ ! -f $MODF/bioinformatics/segemehl/0.2.0 ]; then
     srun --mem=8gb -o $LOGS/segemehl-0.2.0.out $LOGS/segemehl-0.2.0.sh
 fi
 
+if [ ! -f $MODF/bioinformatics/epiteome/1.0.0 ]; then
+    echo 'epiteome-1.0.0'
+    echo "#!/bin/bash
+    rm -rf $SOFT/epiteome/1.0.0 $SOUR/epiteome $SOUR/epiteome-1.0
+    module load python/2.7.12 perl/5.24.1 
+    module list 
+    mkdir -p $SOFT/epiteome/1.0.0/bin
+    export PERL5LIB=$SOFT/epiteome/1.0.0/lib/perl5:\$PERL5LIB
+    echo \$PERL5LIB
+    cd $SOUR
+    wget -O d.tar.gz https://github.com/jdaron/epiTEome/archive/v1.0.tar.gz
+    mv d.tar.gz epiTEome-1.0.tar.gz
+    tar -zxvf epiTEome-1.0.tar.gz
+    cd epiTEome-1.0
+    sed -i 's/usr\/bin\/perl/usr\/bin\/env perl/g' epiTEome.pl
+    sed -i 's/usr\/bin\/perl/usr\/bin\/env perl/g' idxEpiTEome.pl
+    sed -i 's/usr\/bin\/perl/usr\/bin\/env perl/g' insertTEsintoFasta.pl 
+    chmod 755 epiTEome.pl idxEpiTEome.pl insertTEsintoFasta.pl 
+    cp epiTEome.pl idxEpiTEome.pl insertTEsintoFasta.pl $SOFT/epiteome/1.0.0/bin
 
+    mkdir perl_packages
+    cd perl_packages
+    wget http://search.cpan.org/CPAN/authors/id/D/DA/DAGOLDEN/Capture-Tiny-0.46.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/N/NE/NEILB/Text-Diff-1.44.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/E/ET/ETHER/URI-1.71.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/R/RJ/RJBS/Test-Deep-1.127.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/O/OV/OVID/Test-Most-0.35.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/E/EX/EXODIST/Test-Simple-1.302085.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/D/DA/DAGOLDEN/Sub-Uplevel-0.2800.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/B/BE/BENBOOTH/Set-IntervalTree-0.10.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/T/TO/TOBYINK/Exporter-Tiny-1.000000.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/C/CJ/CJFIELDS/BioPerl-1.007001.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/S/SH/SHLOMIF/Statistics-Descriptive-3.0612.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/L/LD/LDS/Bio-SamTools-1.43.tar.gz
+    wget http://search.cpan.org/CPAN/authors/id/R/RE/REHSACK/List-MoreUtils-0.419.tar.gz
+    wget https://downloads.sourceforge.net/project/samtools/samtools/0.1.17/samtools-0.1.17.tar.bz2
 
+    tar -jxvf samtools-0.1.17.tar.bz2
+    cd samtools-0.1.17
+    sed -i 's/-g -Wall -O2/-g -Wall -O2 -fPIC/g' Makefile  
+    make
+    export SAMTOOLS=$SOUR/epiTEome-1.0/perl_packages/samtools-0.1.17
+    cd ../
+
+    TARS='Capture-Tiny-0.46.tar.gz Text-Diff-1.44.tar.gz URI-1.71.tar.gz Sub-Uplevel-0.2800.tar.gz Test-Deep-1.127.tar.gz Test-Simple-1.302085.tar.gz Test-Most-0.35.tar.gz Set-IntervalTree-0.10.tar.gz Exporter-Tiny-1.000000.tar.gz BioPerl-1.007001.tar.gz List-MoreUtils-0.419.tar.gz Statistics-Descriptive-3.0612.tar.gz Bio-SamTools-1.43.tar.gz'
+
+    for f in \${TARS}; 
+        do cd $SOUR/epiTEome-1.0/perl_packages; 
+        echo '*******************'
+        tar -zxvf \${f}; 
+        cd \${f%.tar.gz}; 
+        cpanm . -l $SOFT/epiteome/1.0.0/; 
+    done
+    cpanm File::Which -l $SOFT/epiteome/1.0.0/ 
+ 
+    newmod.sh -s epiteome -p $MODF/bioinformatics/ -v 1.0.0 -d 1.0.0
+    echo 'module load python/2.7.12 perl/5.24.1 ngsutils/0.5.9 samtools/1.3.1 bedtools/2.26.0 ngsutils/0.5.9 segemehl/0.2.0 bzip2/1.0.6' >> $MODF/bioinformatics/epiteome/1.0.0
+    echo 'prepend-path PERL5LIB /beegfs/common/software/2017/modules/software/epiteome/1.0.0/lib/perl5' >> $MODF/bioinformatics/epiteome/1.0.0
+    " > $LOGS/epiteome-1.0.0.sh
+    chmod 755 $LOGS/epiteome-1.0.0.sh
+    srun --mem=8gb -o $LOGS/epiteome-1.0.0.out $LOGS/epiteome-1.0.0.sh
+fi
 
 
 exit
