@@ -1907,8 +1907,6 @@ make; make install; cd ../; done
     srun --mem=8gb -o $LOGS/meme-4.11.4.out $LOGS/meme-4.11.4.sh
 fi
 
-rm -rf $MODF/bioinformatics/ngsutils/0.5.9
-
 if [ ! -f $MODF/bioinformatics/ngsutils/0.5.9 ]; then
     echo 'ngsutils-0.5.9'
     echo "#!/bin/bash
@@ -1930,6 +1928,31 @@ if [ ! -f $MODF/bioinformatics/ngsutils/0.5.9 ]; then
     chmod 755 $LOGS/ngsutils-0.5.9.sh
     srun --mem=8gb -o $LOGS/ngsutils-0.5.9.out $LOGS/ngsutils-0.5.9.sh
 fi
+
+rm -rf $MODF/bioinformatics/segemehl/0.2.0
+
+if [ ! -f $MODF/bioinformatics/segemehl/0.2.0 ]; then
+    echo 'segemehl-0.2.0'
+    echo "#!/bin/bash
+    rm -rf $SOFT/segemehl/0.2.0 $SOUR/segemehl_0_2_0.tar.gz $SOUR/segemehl_0_2_0
+    module load python
+    module list 
+    mkdir -p $SOFT/segemehl/0.2.0/bin
+    cd $SOUR && wget http://www.bioinf.uni-leipzig.de/Software/segemehl/segemehl_0_2_0.tar.gz && \
+    tar -zxvf segemehl_0_2_0.tar.gz && \
+    cd segemehl_0_2_0/segemehl && \
+	sed -i 's/-Lsrc/-Lsrc -I\/draco\/u\/jboucas\/modules\/software\/ncurses\/6.0\/include\/ncurses/g' Makefile
+	sed -i 's/-lncurses/-lncurses -L\/draco\/u\/jboucas\/modules\/software\/ncurses\/6.0\/lib/g' Makefile
+    make && \
+	cp lack.x segemehl.x testrealign.x $SOFT/segemehl/0.2.0/bin && \ 
+    newmod.sh -s segemehl -p $MODF/bioinformatics/ -v 0.2.0 -d 0.2.0
+    " > $LOGS/segemehl-0.2.0.sh
+    chmod 755 $LOGS/segemehl-0.2.0.sh
+    srun --mem=8gb -o $LOGS/segemehl-0.2.0.out $LOGS/segemehl-0.2.0.sh
+fi
+
+
+
 
 
 exit
