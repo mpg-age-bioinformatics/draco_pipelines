@@ -1952,9 +1952,9 @@ fi
 if [ ! -f $MODF/bioinformatics/epiteome/1.0.0 ]; then
     echo 'epiteome-1.0.0'
     echo "#!/bin/bash
-    rm -rf $SOFT/epiteome/1.0.0 $SOUR/epiteome $SOUR/epiteome-1.0
+    rm -rf $SOFT/epiteome/1.0.0 $SOUR/epiteome $SOUR/epiTEome-1.0
     module load python/2.7.12 perl/5.24.1 
-    module list 
+    module list
     mkdir -p $SOFT/epiteome/1.0.0/bin
     export PERL5LIB=$SOFT/epiteome/1.0.0/lib/perl5:\$PERL5LIB
     echo \$PERL5LIB
@@ -1988,7 +1988,8 @@ if [ ! -f $MODF/bioinformatics/epiteome/1.0.0 ]; then
 
     tar -jxvf samtools-0.1.17.tar.bz2
     cd samtools-0.1.17
-    sed -i 's/-g -Wall -O2/-g -Wall -O2 -fPIC/g' Makefile  
+    sed -i 's/-g -Wall -O2/-g -Wall -O2 -fPIC -I\/draco\/u\/jboucas\/modules\/software\/ncurses\/6.0\/include\/ncurses/g' Makefile 
+	sed -i 's/-lcurses/-lncurses/g' Makefile
     make
     export SAMTOOLS=$SOUR/epiTEome-1.0/perl_packages/samtools-0.1.17
     cd ../
@@ -2006,10 +2007,11 @@ if [ ! -f $MODF/bioinformatics/epiteome/1.0.0 ]; then
  
     newmod.sh -s epiteome -p $MODF/bioinformatics/ -v 1.0.0 -d 1.0.0
     echo 'module load python/2.7.12 perl/5.24.1 ngsutils/0.5.9 samtools/1.3.1 bedtools/2.26.0 ngsutils/0.5.9 segemehl/0.2.0 bzip2/1.0.6' >> $MODF/bioinformatics/epiteome/1.0.0
-    echo 'prepend-path PERL5LIB /beegfs/common/software/2017/modules/software/epiteome/1.0.0/lib/perl5' >> $MODF/bioinformatics/epiteome/1.0.0
+    echo 'prepend-path PERL5LIB ${SOFT}/epiteome/1.0.0/lib/perl5' >> $MODF/bioinformatics/epiteome/1.0.0
     " > $LOGS/epiteome-1.0.0.sh
     chmod 755 $LOGS/epiteome-1.0.0.sh
-    srun --mem=8gb -o $LOGS/epiteome-1.0.0.out $LOGS/epiteome-1.0.0.sh
+    #srun --mem=8gb -o $LOGS/epiteome-1.0.0.out $LOGS/epiteome-1.0.0.sh
+	$LOGS/epiteome-1.0.0.sh > $LOGS/epiteome-1.0.0.out 2>&1 
 fi
 
 
