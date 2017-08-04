@@ -1606,6 +1606,11 @@ if [ ! -f $MODF/general/perl/5.24.1 ]; then
 	curl -L https://cpanmin.us/ -o cpanm
 	chmod +x cpanm
 	echo 'prepend-path PERL5LIB ${SOFT}/perl/5.24.1/libraries' >> $MODF/general/perl/5.24.1
+	echo 'set home $::env(HOME)' >> $MODF/general/perl/5.24.1
+        echo 'set perluser $home/.perl/5.24.1' >> $MODF/general/perl/5.24.1
+        echo 'exec /bin/mkdir -p $perluser/perl5' >> $MODF/general/perl/5.24.1
+        echo 'prepend-path PERL5LIB $perluser/perl5' >> $MODF/general/perl/5.24.1
+        echo 'setenv PERLUSER $perluser' >> $MODF/general/perl/5.24.1
     " > $LOGS/perl-5.24.1.sh
     chmod 755 $LOGS/perl-5.24.1.sh 
     srun --mem=8gb -o $LOGS/perl-5.24.1.out $LOGS/perl-5.24.1.sh 
